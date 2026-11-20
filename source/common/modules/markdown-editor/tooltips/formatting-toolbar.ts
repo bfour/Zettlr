@@ -77,7 +77,7 @@ function getToolbar (state: EditorState): Tooltip[] {
       const comment = document.createElement('button')
       comment.classList.add('formatting-toolbar-button')
       comment.setAttribute('title', trans('Comment'))
-      comment.innerHTML = '<cds-icon shape="code"></cds-icon>'
+      comment.innerHTML = '<cds-icon shape="chat-bubble"></cds-icon>'
 
       const code = document.createElement('button')
       code.classList.add('formatting-toolbar-button')
