@@ -44,6 +44,8 @@ import { type EditorConfigOptions } from '@common/modules/markdown-editor/util/c
 import type { CodeFileDescriptor, DirDescriptor, MDFileDescriptor } from '@dts/common/fsal'
 import { getBibliographyForDescriptor as getBibliography } from '@common/util/get-bibliography-for-descriptor'
 import { EditorSelection } from '@codemirror/state'
+import { language } from '@codemirror/language'
+import { EditorView } from '@codemirror/view'
 import { documentAuthorityIPCAPI } from '@common/modules/markdown-editor/util/ipc-api'
 import { useConfigStore, useDocumentTreeStore, useTagsStore, useWindowStateStore, useWorkspaceStore } from 'source/pinia'
 import { isAbsolutePath, pathBasename, pathDirname, resolvePath } from '@common/util/renderer-path-polyfill'
@@ -54,6 +56,7 @@ import type { FileContentSearchResult } from 'source/app/service-providers/searc
 import type { CustomEditorShortcut } from 'source/common/modules/markdown-editor/keymaps/shortcuts'
 import type { CitationRecord } from 'source/common/modules/markdown-editor/autocomplete/citations'
 import type { FileRecord } from 'source/common/modules/markdown-editor/autocomplete/files'
+import { getDocumentComments } from './util/document-comments'
 import getDocumentTitle from './util/get-document-title'
 
 const ipcRenderer = window.ipc
@@ -186,6 +189,9 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (currentEditor !== null) {
+    if (windowStateStore.commentsByLeaf.get(props.leafId)?.path === currentEditor.documentPath) {
+      windowStateStore.commentsByLeaf.delete(props.leafId)
+    }
     props.persistentStateMap.set(props.file.path, currentEditor.persistentState)
     // Clear out the table of contents before unmounting the component.
     windowStateStore.tableOfContents = undefined
@@ -472,6 +478,7 @@ async function getEditorFor (doc: string): Promise<MarkdownEditor> {
   // Update the document info on corresponding events
   editor.on('loaded', () => {
     if (currentEditor === editor) {
+      updateComments(editor)
       windowStateStore.activeDocumentInfo = currentEditor.documentInfo
       windowStateStore.tableOfContents = currentEditor.tableOfContents
     }
@@ -479,6 +486,7 @@ async function getEditorFor (doc: string): Promise<MarkdownEditor> {
 
   editor.on('change', () => {
     if (currentEditor === editor) {
+      updateComments(editor)
       windowStateStore.tableOfContents = currentEditor.tableOfContents
     }
   })
@@ -569,6 +577,35 @@ async function loadDocument (): Promise<void> {
     }
   })
   currentEditor.projectInfo = updateProjectInfo()
+}
+
+function updateComments (editor: MarkdownEditor): void {
+  if (!isMarkdown.value) {
+    return
+  }
+
+  const view = editor.instance
+  const parser = view.state.facet(language)?.parser
+  if (parser === undefined) {
+    return
+  }
+
+  const doc = view.state.doc
+  windowStateStore.commentsByLeaf.set(props.leafId, {
+    path: editor.documentPath,
+    comments: getDocumentComments(doc, parser),
+    selectComment: ({ from, to }: { from: number, to: number }) => {
+      if (currentEditor !== editor || view.state.doc !== doc) {
+        return
+      }
+
+      view.dispatch({
+        selection: EditorSelection.single(from, to),
+        effects: EditorView.scrollIntoView(from, { y: 'center' })
+      })
+      view.focus()
+    }
+  })
 }
 
 function jtl (lineNumber: number): void {
