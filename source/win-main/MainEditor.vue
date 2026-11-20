@@ -10,10 +10,21 @@
       fullscreen: distractionFree
     }"
     v-on:zettlr-annotate-selection="openCommentComposer"
+    v-on:zettlr-citation-picker="openCitationPicker"
   >
     <div v-bind:id="`cm-text-${props.leafId}`">
       <!-- This element will be replaced with Codemirror's wrapper element on mount -->
     </div>
+    <CitationPicker
+      v-if="citationPicker !== undefined"
+      v-bind:citations="citationPicker.citations"
+      v-bind:used="citationPicker.used"
+      v-bind:initial-query="citationPicker.initialQuery"
+      v-bind:loading="citationPicker.loading"
+      v-bind:error="citationPicker.error"
+      v-on:select="selectCitation"
+      v-on:close="closeCitationPicker"
+    ></CitationPicker>
   </div>
 </template>
 
@@ -36,44 +47,33 @@
 
 import MarkdownEditor, { type EditorViewPersistentState } from '@common/modules/markdown-editor'
 
-import { ref, computed, onMounted, onBeforeUnmount, watch, toRef, onUpdated } from 'vue'
+import { ref, shallowRef, computed, nextTick, onMounted, onBeforeUnmount, watch, toRef, onUpdated } from 'vue'
 import { type EditorCommands } from './App.vue'
 import { hasMarkdownExt } from '@common/util/file-extention-checks'
 import { DP_EVENTS, type OpenDocument } from '@dts/common/documents'
 import { CITEPROC_MAIN_DB } from '@dts/common/citeproc'
 import { type EditorConfigOptions } from '@common/modules/markdown-editor/util/configuration'
 import type { CodeFileDescriptor, DirDescriptor, MDFileDescriptor } from '@dts/common/fsal'
-import { getBibliographyForDescriptor as getBibliography } from '@common/util/get-bibliography-for-descriptor'
 import { EditorSelection } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { documentAuthorityIPCAPI } from '@common/modules/markdown-editor/util/ipc-api'
 import { useConfigStore, useDocumentTreeStore, useTagsStore, useWindowStateStore, useWorkspaceStore } from 'source/pinia'
-import { isAbsolutePath, pathBasename, pathDirname, resolvePath } from '@common/util/renderer-path-polyfill'
+import { pathBasename, pathDirname, resolvePath } from '@common/util/renderer-path-polyfill'
 import type { DocumentManagerIPCAPI, DocumentsUpdateContext } from 'source/app/service-providers/documents'
 import type { CiteprocProviderIPCAPI } from 'source/app/service-providers/citeproc'
 import type { ProjectInfo } from 'source/common/modules/markdown-editor/plugins/project-info-field'
 import type { FileContentSearchResult } from 'source/app/service-providers/search'
 import type { CustomEditorShortcut } from 'source/common/modules/markdown-editor/keymaps/shortcuts'
-import type { CitationRecord } from 'source/common/modules/markdown-editor/autocomplete/citations'
+import { getCitationPrefix, insertCitation } from '@common/modules/markdown-editor/autocomplete/citations'
+import { markdownToAST, extractMarkdownCitekeys } from '@common/modules/markdown-utils'
+import { getRendererBibliography, collectWorkspaceCitekeys } from './util/workspace-citations'
+import { toCitationPickerResult, type CitationPickerResult } from './util/citation-picker'
+import CitationPicker from './CitationPicker.vue'
 import type { FileRecord } from 'source/common/modules/markdown-editor/autocomplete/files'
 import { documentCommentsField, encodeAnnotation } from '@common/modules/markdown-editor/util/document-comments'
 import getDocumentTitle from './util/get-document-title'
 
 const ipcRenderer = window.ipc
-
-// This function overwrites the getBibliographyForDescriptor function to ensure
-// the library is always absolute. We have to do it this ridiculously since the
-// function is called in both main and renderer processes, and we still have the
-// issue that path-browserify is entirely unusable.
-function getBibliographyForDescriptor (descriptor: MDFileDescriptor): string {
-  const library = getBibliography(descriptor)
-
-  if (library !== CITEPROC_MAIN_DB && !isAbsolutePath(library)) {
-    return resolvePath(descriptor.dir, library)
-  } else {
-    return library
-  }
-}
 
 const props = defineProps<{
   leafId: string
@@ -104,7 +104,7 @@ ipcRenderer.on('citeproc-database-updated', (_event, _dbPath: string) => {
     return // Nothing to do
   }
 
-  const library = getBibliographyForDescriptor(descriptor)
+  const library = getRendererBibliography(descriptor)
   updateCitationKeys(library).catch(e => {
     console.error('Could not update citation keys', e)
   })
@@ -155,7 +155,7 @@ ipcRenderer.on('documents-update', (e, payload: { event: DP_EVENTS, context: Doc
         }
 
         activeFileDescriptor.value = descriptor
-        const library = descriptor.type === 'file' ? getBibliographyForDescriptor(descriptor) : undefined
+        const library = descriptor.type === 'file' ? getRendererBibliography(descriptor) : undefined
         if (library !== undefined) {
           updateCitationKeys(library).catch(e => console.error('Could not update citation keys', e))
         }
@@ -188,6 +188,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  citationPicker.value = undefined
   if (windowStateStore.commentDraft?.leafId === props.leafId) {
     windowStateStore.commentDraft = undefined
   }
@@ -213,6 +214,7 @@ onUpdated(() => {
 
   const currentFilePath = currentEditor.documentPath
   if (currentFilePath !== props.activeFile?.path) {
+    citationPicker.value = undefined
     // File path has changed -> unmount and remount (duplicate code from
     // onMounted and onBeforeUnmount hooks).
     props.persistentStateMap.set(currentFilePath, currentEditor.persistentState)
@@ -220,13 +222,22 @@ onUpdated(() => {
     loadDocument().catch(err => console.error(err))
   }
 
-  if (!currentEditor.hasFocus()) {
+  if (citationPicker.value === undefined && !currentEditor.hasFocus()) {
     currentEditor.focus()
   }
 })
 
 // DATA SETUP
 const mainEditorWrapper = ref<HTMLDivElement|null>(null)
+const citationPicker = shallowRef<{
+  editor: MarkdownEditor
+  citations: CitationPickerResult[]
+  used: Set<string>
+  initialQuery: string
+  loading: boolean
+  error: boolean
+}>()
+
 
 // COMPUTED PROPERTIES
 const useH1 = computed<boolean>(() => configStore.config.fileNameDisplay.includes('heading'))
@@ -403,6 +414,10 @@ watch(toRef(props.editorCommands, 'executeCommand'), () => {
   }
 
   const command: string = props.editorCommands.data
+  if (command === 'markdownCitation') {
+    openCitationPicker()
+    return
+  }
   currentEditor.runCommand(command)
   currentEditor.focus()
 })
@@ -564,7 +579,7 @@ async function loadDocument (): Promise<void> {
 
   activeFileDescriptor.value = descriptor
 
-  const library = descriptor.type === 'file' ? getBibliographyForDescriptor(descriptor) : undefined
+  const library = descriptor.type === 'file' ? getRendererBibliography(descriptor) : undefined
   if (library !== undefined) {
     updateCitationKeys(library).catch(e => console.error('Could not update citation keys', e))
   }
@@ -661,58 +676,95 @@ function jtl (lineNumber: number): void {
   currentEditor?.jtl(lineNumber)
 }
 
-async function updateCitationKeys (library: string): Promise<void> {
-  const items: CitationRecord[] = (await ipcRenderer.invoke('citeproc-provider', {
+async function getBibliographyItems (library: string): Promise<CitationPickerResult[]> {
+  const items: CSLItem[] = await ipcRenderer.invoke('citeproc-provider', {
     command: 'get-items',
     payload: { database: library }
-  } as CiteprocProviderIPCAPI))
-    .map((item: CSLItem) => {
-      // Get a rudimentary author list. Precedence are authors, then editors.
-      // Fallback: Container title.
-      let authors = ''
-      const authorSrc = item.author !== undefined && Array.isArray(item.author)
-        ? item.author
-        : item.editor !== undefined && Array.isArray(item.editor) ? item.editor : []
+  } as CiteprocProviderIPCAPI)
+  return items.map(toCitationPickerResult)
+}
 
-      if (authorSrc.length > 0) {
-        authors = authorSrc.map(author => {
-          if (author.family !== undefined) {
-            return author.family
-          } else if (author.literal !== undefined) {
-            return author.literal
-          } else {
-            return undefined
-          }
-        }).filter(elem => elem !== undefined).join(', ')
-      } else if (item['container-title'] !== undefined && typeof item['container-title'] === 'string') {
-        authors = item['container-title']
-      }
+async function updateCitationKeys (library: string): Promise<void> {
+  const editor = currentEditor
+  const citations = await getBibliographyItems(library)
+  const descriptor = activeFileDescriptor.value
+  if (editor !== null && currentEditor === editor && descriptor?.type === 'file' && descriptor.path === editor.documentPath &&
+    getRendererBibliography(descriptor) === library) {
+    editor.setCompletionDatabase('citations', citations)
+  }
+}
 
-      let title = ''
-      if (item.title !== undefined && typeof item.title === 'string') {
-        title = item.title
-      } else if (item['container-title'] !== undefined && typeof item['container-title'] === 'string') {
-        title = item['container-title']
-      }
+function openCitationPicker (event?: Event): void {
+  const editor = currentEditor
+  if (editor === null || !isMarkdown.value || editor.instance.state.readOnly ||
+    editor.documentPath !== props.activeFile?.path || documentTreeStore.lastLeafId !== props.leafId) {
+    return
+  }
 
-      let date = ''
-      if (item.issued != undefined && typeof item.issued === 'object') {
-        if ('date-parts' in item.issued && Array.isArray(item.issued['date-parts'])) {
-          const year = item.issued['date-parts'][0][0]
-          date = ` (${year})`
-        } else if ('literal' in item.issued) {
-          date = ` (${item.issued.literal})`
-        }
-      }
+  event?.preventDefault()
+  if (citationPicker.value !== undefined) {
+    return
+  }
 
-      // This is just a very crude representation of the citations.
-      return {
-        citekey: item.id,
-        displayText: `${authors}${date} - ${title}`
-      }
-    })
+  const picker = {
+    editor,
+    citations: [],
+    used: new Set<string>(),
+    initialQuery: getCitationPrefix(editor.instance.state)?.query ?? '',
+    loading: true,
+    error: false
+  }
+  citationPicker.value = picker
+  loadCitationPicker(editor).then(result => {
+    if (citationPicker.value === picker) {
+      citationPicker.value = { ...picker, ...result, loading: false }
+    }
+  }).catch(error => {
+    console.error('Could not load citation picker', error)
+    if (citationPicker.value === picker) {
+      citationPicker.value = { ...picker, loading: false, error: true }
+    }
+  })
+}
 
-  currentEditor?.setCompletionDatabase('citations', items)
+async function loadCitationPicker (editor: MarkdownEditor): Promise<{ citations: CitationPickerResult[], used: Set<string> }> {
+  const path = editor.documentPath
+  let descriptor = activeFileDescriptor.value
+  if (descriptor?.path !== path) {
+    descriptor = await ipcRenderer.invoke('fsal', { command: 'get-descriptor', payload: path })
+  }
+  if (descriptor?.type !== 'file') {
+    throw new Error('Could not read the active Markdown document')
+  }
+  const library = getRendererBibliography(descriptor)
+  const [ citations, modifiedCitekeys ] = await Promise.all([
+    getBibliographyItems(library),
+    ipcRenderer.invoke('documents-provider', { command: 'get-modified-citekeys' } as DocumentManagerIPCAPI) as Promise<Map<string, string[]>>
+  ])
+  const activeCitekeys = extractMarkdownCitekeys(markdownToAST(editor.instance.state.sliceDoc()))
+  const used = collectWorkspaceCitekeys(
+    descriptor, library, workspaceStore.workspaceMap, workspaceStore.descriptorMap, activeCitekeys, modifiedCitekeys
+  )
+  return { citations, used }
+}
+
+function closeCitationPicker (): void {
+  const editor = citationPicker.value?.editor
+  citationPicker.value = undefined
+  nextTick(() => {
+    if (editor !== undefined && citationPicker.value === undefined && currentEditor === editor && editor.documentPath === props.activeFile?.path) {
+      editor.focus()
+    }
+  }).catch(error => console.error(error))
+}
+
+function selectCitation (citekey: string): void {
+  const picker = citationPicker.value
+  if (picker !== undefined && picker.editor === currentEditor &&
+    picker.editor.documentPath === props.activeFile?.path && picker.citations.some(citation => citation.citekey === citekey)) {
+    insertCitation(picker.editor.instance, citekey)
+  }
+  closeCitationPicker()
 }
 
 async function updateFileDatabase (): Promise<void> {

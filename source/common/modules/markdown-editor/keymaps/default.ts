@@ -19,6 +19,7 @@ import {
   acceptCompletion, closeCompletion, moveCompletionSelection,
   startCompletion, deleteBracketPair
 } from '@codemirror/autocomplete'
+import { requestCitationPicker } from '../autocomplete/citations'
 import {
   cursorCharLeft, selectCharLeft, cursorGroupLeft, selectGroupLeft,
   cursorLineBoundaryLeft, selectLineBoundaryLeft, cursorCharRight,
@@ -268,6 +269,7 @@ export function mainEditorKeybindings (customShortcutMap: CustomEditorShortcut[]
     { key: sc('md-highlight'), run: applyHighlight },
     { key: sc('md-insert-image'), run: insertImage },
     { key: 'Mod-Shift-c', run: applyComment },
+    { key: 'Mod-Shift-y', run: requestCitationPicker },
     { key: sc('md-insert-footnote'), run: addNewFootnote },
 
     // historyKeymap, but with our own keyboard shortcuts

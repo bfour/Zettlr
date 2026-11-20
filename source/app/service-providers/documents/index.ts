@@ -30,7 +30,7 @@ import { type Update } from '@codemirror/collab'
 import { ChangeSet, Text } from '@codemirror/state'
 import type { CodeFileDescriptor, MDFileDescriptor } from '@dts/common/fsal'
 import { countAll } from '@common/util/counter'
-import { markdownToAST } from '@common/modules/markdown-utils'
+import { extractMarkdownCitekeys, markdownToAST } from '@common/modules/markdown-utils'
 import isFile from '@common/util/is-file'
 import { trans } from '@common/i18n-main'
 import type FSALWatchdog from '@providers/fsal/fsal-watchdog'
@@ -144,6 +144,7 @@ export type DocumentManagerIPCAPI = IPCAPI<{
   'get-open-workspace-files': { path: string }
   'sort-open-files': LeafLoc & { newOrder: string[] }
   'get-file-modification-status': unknown
+  'get-modified-citekeys': unknown
   'move-file': {
     originWindow: string,
     targetWindow: string,
@@ -318,6 +319,11 @@ export default class DocumentManager extends ProviderContract {
         }
         case 'get-file-modification-status': {
           return this.documents.filter(x => this.isModified(x.filePath)).map(x => x.filePath)
+        }
+        case 'get-modified-citekeys': {
+          return new Map(this.documents
+            .filter(doc => doc.type === DocumentType.Markdown && doc.lastSavedVersion !== doc.currentVersion)
+            .map(doc => [ doc.filePath, extractMarkdownCitekeys(markdownToAST(doc.document.toString())) ]))
         }
         case 'move-file': {
           const {
