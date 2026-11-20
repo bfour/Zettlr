@@ -111,24 +111,32 @@ function findAnchor (source: string, saved: SavedAnnotation): DocumentComment['a
     }
   }
 
-  // A unique exact match with the recorded context still points to the
-  // original selection even when edits have moved it.
-  if (best !== undefined && !tied && best.score === availableContext) {
-    return { from: best.from, to: best.to }
+  // Edits next to an intact quote can change its context. Prefer the quote
+  // itself so that text inserted at either edge stays outside the selection.
+  if (best !== undefined) {
+    return tied ? undefined : { from: best.from, to: best.to }
   }
 
-  // If the selection itself changed, recover its boundaries from the text
-  // immediately around it. Require unambiguous boundary matches.
-  const left = before === '' ? 0 : uniqueIndexOf(source, before, 0)
+  // If the quote changed, use two known, unambiguous boundaries. A missing
+  // boundary is not evidence that the selection reaches the document edge.
+  if (before === '' || after === '') {
+    return undefined
+  }
+  const left = uniqueIndexOf(source, before, 0)
+  if (left === -1) {
+    return undefined
+  }
   const start = left + before.length
-  const end = after === ''
-    ? source.length - (source.slice(-2).match(/\n{1,2}$/)?.[0].length ?? 0)
-    : uniqueIndexOf(source, after, start)
-  if (left >= 0 && end >= start) {
-    return { from: start, to: end }
+  const end = uniqueIndexOf(source, after, start)
+  if (end === -1) {
+    return undefined
   }
 
-  return best !== undefined && !tied ? { from: best.from, to: best.to } : undefined
+  // Sparse context cannot distinguish newly inserted lines from edits inside
+  // the quote. Keep the note without a highlight when recovery would grow it.
+  const previousBreaks = quote.match(/\n/g)?.length ?? 0
+  const recoveredBreaks = source.slice(start, end).match(/\n/g)?.length ?? 0
+  return recoveredBreaks > previousBreaks ? undefined : { from: start, to: end }
 }
 
 function uniqueIndexOf (source: string, text: string, from: number): number {
