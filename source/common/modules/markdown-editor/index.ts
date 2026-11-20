@@ -244,7 +244,7 @@ export default class MarkdownEditor extends EventEmitter {
    */
   private readonly databaseCache: {
     tags: TagRecord[]
-    citations: Array<{ citekey: string, displayText: string }>
+    citations: CitationRecord[]
     snippets: Array<{ name: string, content: string }>
     files: Array<{ filename: string, displayName: string, id: string }>
   }

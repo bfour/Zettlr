@@ -144,6 +144,7 @@
  * END HEADER
  */
 
+import { hasMarkdownExt } from '@common/util/file-extention-checks'
 import WindowChrome from '@common/vue/window/WindowChrome.vue'
 import FileManager from './file-manager/FileManager.vue'
 import MainSidebar from './sidebar/MainSidebar.vue'
@@ -519,6 +520,13 @@ const toolbarControls = computed<ToolbarControl[]>(() => {
       title: trans('Insert Pandoc Div or Span'),
       icon: 'drag-handle',
       visible: getToolbarButtonDisplay('showPandocDivSpanButton')
+    },
+    {
+      type: 'button',
+      id: 'markdownCitation',
+      title: trans('Insert citation'),
+      icon: 'book',
+      visible: activeFile.value !== undefined && hasMarkdownExt(activeFile.value.path)
     },
     {
       type: 'button',

@@ -14,7 +14,7 @@
  */
 
 import markdownParser, { type MarkdownParserConfig } from '@common/modules/markdown-editor/parser/markdown-parser'
-import { parseNode, type ASTNode, type ASTNodeType, type TextNode, type Document } from './markdown-ast'
+import { parseNode, type ASTNode, type ASTNodeType, type CitationNode, type TextNode, type Document } from './markdown-ast'
 import { type Tree } from '@lezer/common'
 
 export { md2html } from './markdown-to-html'
@@ -42,6 +42,11 @@ export function markdownToAST (markdown: string, tree: Tree|null = null, parserC
   }
   const ast = parseNode(tree.topNode, markdown)
   return ast
+}
+
+export function extractMarkdownCitekeys (ast: ASTNode): string[] {
+  return (extractASTNodes(ast, 'Citation') as CitationNode[])
+    .flatMap(node => node.parsedCitation.items.map(item => item.id))
 }
 
 /**

@@ -14,7 +14,7 @@
 
 import { type Completion } from '@codemirror/autocomplete'
 import { type EditorState, StateEffect, StateField } from '@codemirror/state'
-import { type EditorView } from '@codemirror/view'
+import { type Command, type EditorView } from '@codemirror/view'
 import { type AutocompletePlugin } from '.'
 import { configField } from '../util/configuration'
 import { extractCitationNodes, nodeToCiteItem } from '../parser/citation-parser'
@@ -24,7 +24,9 @@ import { extractCitationNodes, nodeToCiteItem } from '../parser/citation-parser'
  */
 export interface CitationRecord {
   citekey: string
-  displayText: string
+  title: string
+  authors: string
+  year: string
 }
 
 /**
@@ -39,13 +41,13 @@ export const citekeyUpdateField = StateField.define<Completion[]>({
     for (const effect of transaction.effects) {
       if (effect.is(citekeyUpdate)) {
         // Convert the citationentries into completion objects
-        return effect.value.map(entry => {
-          return {
-            label: entry.citekey,
-            info: entry.displayText,
-            apply
-          }
-        })
+        return effect.value.map(entry => ({
+          label: entry.citekey,
+          displayLabel: entry.title || entry.citekey,
+          detail: [ entry.authors, entry.year ].filter(Boolean).join(' · '),
+          info: entry.citekey,
+          apply: (view, completion, from, to) => applyCitationCompletion(view, completion.label, from, to)
+        }))
       }
     }
     return val
@@ -83,35 +85,33 @@ function sortCitationKeysByUsage (state: EditorState): Completion[] {
   }
 
   // Now sort the entries based on the existing citation counts
-  entries.sort((a, b) => {
+  return entries.toSorted((a, b) => {
     const countA: number = citationCounts[a.label] ?? 0
     const countB: number = citationCounts[b.label] ?? 0
     return countB - countA
   })
-
-  return entries
 }
 
-/**
- * This utility function just takes a citekey and ensures that the way the
- * completion is applied matches the settings on the editor instance.
- *
- * @param   {string}      infoString  The infostring to use
- */
-const apply = function (view: EditorView, completion: Completion, from: number, to: number): void {
+function formatCitekey (key: string): string {
+  return /^[\w:.#$%&+?<>~/-]*[a-zA-Z0-9]$/.test(key) ? key : `{${key}}`
+}
+
+function applyCitationCompletion (view: EditorView, citekey: string, from: number, to: number): void {
   const citeStyle = view.state.field(configField).citeStyle
+  const key = formatCitekey(citekey)
   const lineObject = view.state.doc.lineAt(from)
   const line = lineObject.text
   const fromCh = from - lineObject.from
   const toCh = to - lineObject.from
 
   const afterOpen = line.lastIndexOf('[', fromCh) > line.lastIndexOf(']', fromCh)
-  // Either no open and 1 close bracket or a close bracket after an open bracket
-  const beforeClose = (!line.includes('[', toCh) && line.includes(']', toCh)) || (line.indexOf(']', toCh) < line.indexOf('[', toCh))
+  const nextOpen = line.indexOf('[', toCh)
+  const nextClose = line.indexOf(']', toCh)
+  const beforeClose = nextClose !== -1 && (nextOpen === -1 || nextClose < nextOpen)
   const noBrackets = !afterOpen && !beforeClose
 
   if (citeStyle === 'regular' && noBrackets) {
-    const insert = `[@${completion.label}]`
+    const insert = `[@${key}]`
     view.dispatch({
       // Minus 1 is important since we have to overwrite the @-sign with [@
       changes: [{ from: from - 1, to, insert }],
@@ -119,7 +119,7 @@ const apply = function (view: EditorView, completion: Completion, from: number, 
     })
   } else if (citeStyle === 'in-text-suffix' && noBrackets) {
     // We should add square brackets after the completion text
-    const insert = `${completion.label} []`
+    const insert = `${key} []`
     view.dispatch({
       changes: [{ from, to, insert }],
       selection: { anchor: from + insert.length - 1 } // Inside []
@@ -127,10 +127,49 @@ const apply = function (view: EditorView, completion: Completion, from: number, 
   } else {
     // Otherwise: citeStyle was in-text or there were brackets surrounding the
     // citekey, so we can simply replace it
-    const insert = String(completion.label)
-    view.dispatch({ changes: [{ from, to, insert }], selection: { anchor: from + insert.length } })
+    view.dispatch({ changes: { from, to, insert: key }, selection: { anchor: from + key.length } })
   }
 }
+
+export function getCitationPrefix (state: EditorState): { from: number, query: string }|undefined {
+  const { empty, head } = state.selection.main
+  if (!empty) {
+    return undefined
+  }
+
+  const { from, text } = state.doc.lineAt(head)
+  const prefix = /(?:^|[\s[(;-])@([\p{L}\p{N}_:.+/#$%&?<>~-]*)$/u.exec(text.slice(0, head - from))
+  return prefix === null ? undefined : { from: head - prefix[1].length, query: prefix[1] }
+}
+
+export function insertCitation (view: EditorView, citekey: string): void {
+  if (view.state.readOnly) {
+    return
+  }
+
+  const prefix = getCitationPrefix(view.state)
+  const { from, to } = view.state.selection.main
+  if (prefix !== undefined) {
+    applyCitationCompletion(view, citekey, prefix.from, to)
+    return
+  }
+
+  const citeStyle = view.state.field(configField).citeStyle
+  const key = formatCitekey(citekey)
+  const insert = citeStyle === 'regular' ? `[@${key}]`
+    : citeStyle === 'in-text-suffix' ? `@${key} []`
+      : `@${key}`
+  const hasBrackets = citeStyle === 'regular' || citeStyle === 'in-text-suffix'
+  view.dispatch({
+    changes: { from, to, insert },
+    selection: { anchor: from + insert.length - Number(hasBrackets) },
+    userEvent: 'input.complete'
+  })
+}
+
+export const requestCitationPicker: Command = view => !view.dom.dispatchEvent(
+  new Event('zettlr-citation-picker', { bubbles: true, cancelable: true })
+)
 
 export const citations: AutocompletePlugin = {
   applies (ctx) {
@@ -155,7 +194,7 @@ export const citations: AutocompletePlugin = {
     query = query.toLowerCase()
     const entries = sortCitationKeysByUsage(ctx.state)
     return entries.filter(entry => {
-      return entry.label.toLowerCase().includes(query) || (entry.info as string|undefined)?.toLowerCase().includes(query) === true
+      return [ entry.label, entry.displayLabel, entry.detail ].some(value => value?.toLowerCase().includes(query) === true)
     })
   },
   fields: [citekeyUpdateField]
