@@ -14,7 +14,7 @@
 
 import { EditorView, showTooltip, type Tooltip } from '@codemirror/view'
 import { type EditorState, StateField } from '@codemirror/state'
-import { applyBold, applyCode, applyComment, applyItalic, applyPandocDivOrSpan, insertImage, insertLink, applyHighlight, applyStrikethrough } from '../commands/markdown'
+import { applyBold, applyCode, applyComment, applyItalic, applyPandocDivOrSpan, insertImage, insertLink, applyHighlightColor, applyStrikethrough } from '../commands/markdown'
 import { trans } from '@common/i18n-renderer'
 import { configField } from '../util/configuration'
 
@@ -57,7 +57,57 @@ function getToolbar (state: EditorState): Tooltip[] {
       const highlight = document.createElement('button')
       highlight.classList.add('formatting-toolbar-button')
       highlight.setAttribute('title', trans('Highlight'))
+      highlight.setAttribute('aria-label', trans('Highlight color'))
+      highlight.setAttribute('aria-expanded', 'false')
       highlight.innerHTML = '<cds-icon shape="highlighter"></cds-icon>'
+
+      const palette = document.createElement('div')
+      palette.className = 'highlight-palette'
+      palette.hidden = true
+      palette.setAttribute('role', 'group')
+      palette.setAttribute('aria-label', trans('Highlight color'))
+
+      const colors = [
+        { label: trans('Default') },
+        { label: trans('Yellow'), color: '#ffcd3666' },
+        { label: trans('Green'), color: '#65d68a66' },
+        { label: trans('Blue'), color: '#67bfff66' },
+        { label: trans('Pink'), color: '#ff83b466' },
+        { label: trans('Purple'), color: '#ba9fff66' }
+      ]
+      function showPalette (visible: boolean): void {
+        palette.hidden = !visible
+        highlight.setAttribute('aria-expanded', String(visible))
+      }
+
+      for (const { label, color } of colors) {
+        const swatch = document.createElement('button')
+        swatch.type = 'button'
+        swatch.title = label
+        swatch.setAttribute('aria-label', label)
+        if (color === undefined) {
+          swatch.textContent = label
+        } else {
+          swatch.className = 'highlight-swatch'
+          swatch.style.setProperty('--swatch-color', color.slice(0, 7))
+        }
+        swatch.onmousedown = event => event.preventDefault()
+        swatch.onclick = () => {
+          showPalette(false)
+          applyHighlightColor(view, color)
+          view.focus()
+        }
+        palette.append(swatch)
+      }
+
+      palette.onkeydown = event => {
+        if (event.key === 'Escape') {
+          event.preventDefault()
+          event.stopPropagation()
+          showPalette(false)
+          highlight.focus()
+        }
+      }
 
       const strikethrough = document.createElement('button')
       strikethrough.classList.add('formatting-toolbar-button')
@@ -85,7 +135,7 @@ function getToolbar (state: EditorState): Tooltip[] {
       code.innerHTML = '<cds-icon shape="code-alt"></cds-icon>'
 
       buttonWrapper.append(bold, italic, underline, highlight, strikethrough, link, image, comment, code)
-      dom.append(buttonWrapper)
+      dom.append(buttonWrapper, palette)
 
       // NOTE: We need to use the onmousedown event here, since the click only
       // triggers after onmouseup, and by that time the editor has gone through
@@ -102,9 +152,12 @@ function getToolbar (state: EditorState): Tooltip[] {
         event.preventDefault()
         applyPandocDivOrSpan(view, 'span', { classes: ['underline'] })
       }
-      highlight.onmousedown = function (event) {
-        event.preventDefault()
-        applyHighlight(view)
+      highlight.onmousedown = event => event.preventDefault()
+      highlight.onclick = event => {
+        showPalette(palette.hidden)
+        if (!palette.hidden && event.detail === 0) {
+          palette.querySelector('button')?.focus()
+        }
       }
       strikethrough.onmousedown = function (event) {
         event.preventDefault()
@@ -154,6 +207,22 @@ export const formattingToolbar = [
     },
     '.cm-tooltip.cm-formatting-bar .button-wrapper': {
       display: 'flex'
+    },
+    '.cm-tooltip.cm-formatting-bar .highlight-palette:not([hidden])': {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '5px',
+      padding: '6px',
+      borderTop: '1px solid var(--zettlr-editor-border-color, #8885)'
+    },
+    '.cm-tooltip.cm-formatting-bar button.highlight-swatch': {
+      width: '20px',
+      height: '20px',
+      padding: '0',
+      border: '1px solid #2226',
+      borderRadius: '4px',
+      background: 'var(--swatch-color)'
     },
     '.cm-tooltip.cm-formatting-bar button.formatting-toolbar-button': {
       border: 'none',

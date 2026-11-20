@@ -20,6 +20,7 @@ import type { Range, RangeSet } from '@codemirror/state'
 import { BlockWrapper, Decoration, EditorView, ViewPlugin, type DecorationSet, type ViewUpdate } from '@codemirror/view'
 import { parsePandocAttributes } from 'source/common/pandoc-util/parse-pandoc-attributes'
 import { rangeInSelection } from '../util/range-in-selection'
+import { isColoredHighlightStyle } from '../util/highlight-style'
 import { configField } from '../util/configuration'
 
 function createSpanDecorations (view: EditorView): RangeSet<Decoration> {
@@ -31,10 +32,6 @@ function createSpanDecorations (view: EditorView): RangeSet<Decoration> {
     syntaxTree(view.state).iterate({
       from, to,
       enter: (node) => {
-        if (rangeInSelection(view.state.selection, node.from, node.to, includeAdjacent)) {
-          return
-        }
-
         if (node.name !== 'PandocSpan') {
           return
         }
@@ -65,6 +62,10 @@ function createSpanDecorations (view: EditorView): RangeSet<Decoration> {
         const attributes = parsePandocAttributes(view.state.sliceDoc(attrs.from, attrs.to))
         const classes = attributes.classes ?? []
         const id = attributes.id ?? ''
+        const hasHighlightColor = classes.includes('mark') && isColoredHighlightStyle(attributes.properties?.style)
+        if (!hasHighlightColor && rangeInSelection(view.state.selection, node.from, node.to, includeAdjacent)) {
+          return
+        }
 
         const deco = Decoration.mark({
           attributes: {
@@ -206,10 +207,10 @@ export const renderPandoc = [
     },
     // The classes `.mark`, `.underline`, and
     // `.smallcaps` are used by pandoc spans
-    '.mark .cm-pandoc-span': {
+    '.cm-content .mark': {
       backgroundColor: '#ffff0080',
     },
-    '&dark .mark .cm-pandoc-span': {
+    '&dark .cm-content .mark': {
       backgroundColor: '#ffff0060',
     },
     '.underline .cm-pandoc-span': {
