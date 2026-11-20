@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict'
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
-import { JSDOM } from 'jsdom'
 import { getCitationPrefix, insertCitation } from '../source/common/modules/markdown-editor/autocomplete/citations'
 import { configField, configUpdateEffect } from '../source/common/modules/markdown-editor/util/configuration'
 import { searchCitations, toCitationPickerResult } from '../source/win-main/util/citation-picker'
@@ -75,24 +74,34 @@ describe('Citation picker', () => {
 })
 
 describe('Citation picker insertion', () => {
+  const originalRequestFrame = window.requestAnimationFrame
+  const originalCancelFrame = window.cancelAnimationFrame
+
+  before(() => {
+    window.requestAnimationFrame = callback => window.setTimeout(() => callback(performance.now()), 0)
+    window.cancelAnimationFrame = id => window.clearTimeout(id)
+  })
+
+  after(() => {
+    window.requestAnimationFrame = originalRequestFrame
+    window.cancelAnimationFrame = originalCancelFrame
+  })
+
   it('replaces a typed citation fragment and keeps existing brackets', () => {
     const state = EditorState.create({ doc: 'Text [@old]', selection: { anchor: 10 }, extensions: [ configField ] })
-    const dom = new JSDOM('', { pretendToBeVisual: true })
-    const view = new EditorView({ state, parent: dom.window.document.body })
+    const view = new EditorView({ state })
     try {
       assert.deepEqual(getCitationPrefix(view.state), { from: 7, query: 'old' })
       insertCitation(view, 'smith2024')
       assert.equal(view.state.doc.toString(), 'Text [@smith2024]')
     } finally {
       view.destroy()
-      dom.window.close()
     }
   })
 
   it('respects narrative style and quotes keys that require braces', () => {
     const state = EditorState.create({ doc: '', extensions: [ configField ] })
-    const dom = new JSDOM('', { pretendToBeVisual: true })
-    const view = new EditorView({ state, parent: dom.window.document.body })
+    const view = new EditorView({ state })
     try {
       view.dispatch({ effects: configUpdateEffect.of({ citeStyle: 'in-text-suffix' }) })
       insertCitation(view, 'Müller 2024')
@@ -100,7 +109,6 @@ describe('Citation picker insertion', () => {
       assert.equal(view.state.selection.main.head, view.state.doc.length - 1)
     } finally {
       view.destroy()
-      dom.window.close()
     }
   })
 })
