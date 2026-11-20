@@ -16,6 +16,16 @@
         v-on:jump-to-line="emit('jump-to-line', $event)"
       ></ToCTab>
       <CommentsTab v-show="currentTab === 'comments'"></CommentsTab>
+      <QuartoTab
+        v-if="quartoProject !== undefined"
+        v-show="currentTab === 'quarto'"
+        v-bind:project="quartoProject"
+        v-bind:active-path="props.activePath"
+        v-bind:rendering="props.quartoRendering"
+        v-on:open-file="emit('quarto-open', $event, 1)"
+        v-on:jump-to-line="(path, line) => emit('quarto-open', path, line)"
+        v-on:render="emit('quarto-render')"
+      ></QuartoTab>
       <ReferencesTab v-show="currentTab === 'references'"></ReferencesTab>
       <RelatedFilesTab v-show="currentTab === 'relatedFiles'"></RelatedFilesTab>
       <OtherFilesTab v-show="currentTab === 'attachments'"></OtherFilesTab>
@@ -45,19 +55,28 @@ import CommentsTab from './CommentsTab.vue'
 import ToCTab from './ToCTab.vue'
 import ReferencesTab from './ReferencesTab.vue'
 import RelatedFilesTab from './RelatedFilesTab.vue'
+import QuartoTab from './QuartoTab.vue'
 import OtherFilesTab from './OtherFilesTab.vue'
-import { useConfigStore } from 'source/pinia'
+import { useConfigStore, useWindowStateStore } from 'source/pinia'
 
 const configStore = useConfigStore()
+const windowStateStore = useWindowStateStore()
+const props = defineProps<{ activePath?: string, quartoRendering: boolean }>()
+const quartoProject = computed(() => windowStateStore.quartoProject)
 
 const emit = defineEmits<{
   (e: 'move-section', data: { from: number, to: number }): void
   (e: 'jump-to-line', line: number): void
+  (e: 'quarto-open', path: string, line: number): void
+  (e: 'quarto-render'): void
 }>()
 
-const currentTab = computed(() => configStore.config.window.currentSidebarTab)
+const currentTab = computed(() => {
+  const tab = configStore.config.window.currentSidebarTab
+  return tab === 'quarto' && quartoProject.value === undefined ? 'toc' : tab
+})
 
-const tabs = [
+const tabs = computed(() => [
   {
     icon: 'indent',
     id: 'toc',
@@ -76,6 +95,12 @@ const tabs = [
     target: 'sidebar-bibliography',
     label: trans('References')
   },
+  ...(quartoProject.value === undefined ? [] : [{
+    icon: 'book',
+    id: 'quarto',
+    target: 'sidebar-quarto',
+    label: trans('Quarto book')
+  }]),
   {
     icon: 'file-group',
     id: 'relatedFiles',
@@ -88,7 +113,7 @@ const tabs = [
     target: 'sidebar-files',
     label: trans('Other files')
   }
-]
+])
 
 function setCurrentTab (which: string): void {
   configStore.setConfigValue('window.currentSidebarTab', which)

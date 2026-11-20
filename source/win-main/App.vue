@@ -66,6 +66,10 @@
           <template #view2>
             <!-- Second side: Sidebar -->
             <MainSidebar
+              v-bind:active-path="activeFile?.path"
+              v-bind:quarto-rendering="quartoRendering"
+              v-on:quarto-open="(path, line) => jtl(path, line, true)"
+              v-on:quarto-render="renderQuartoBook"
               v-on:move-section="moveSection($event)"
               v-on:jump-to-line="genericJtl($event)"
             ></MainSidebar>
@@ -145,6 +149,7 @@
  */
 
 import { hasMarkdownExt } from '@common/util/file-extention-checks'
+import { pathBasename } from '@common/util/renderer-path-polyfill'
 import WindowChrome from '@common/vue/window/WindowChrome.vue'
 import FileManager from './file-manager/FileManager.vue'
 import MainSidebar from './sidebar/MainSidebar.vue'
@@ -168,14 +173,15 @@ import {
   computed,
   watch,
   onMounted,
-  onBeforeMount
+  onBeforeMount,
+  onBeforeUnmount
 } from 'vue'
 
 // Import the sound effects for the pomodoro timer
 import glassFile from './assets/glass.wav'
 import alarmFile from './assets/digital_alarm.mp3'
 import chimeFile from './assets/chime.mp3'
-import { DocumentType, type LeafNodeJSON } from '@dts/common/documents'
+import { DocumentType, DP_EVENTS, type LeafNodeJSON } from '@dts/common/documents'
 import { buildPipeMarkdownTable } from '@common/util/build-pipe-markdown-table'
 import { type UpdateState } from '@providers/updates'
 import { type ToolbarControl } from '@common/vue/window/WindowToolbar.vue'
@@ -183,7 +189,9 @@ import getDocumentTitle from './util/get-document-title'
 import { useConfigStore, useDocumentTreeStore, useLRTStore, useWindowStateStore } from 'source/pinia'
 import type { ConfigOptions } from 'source/app/service-providers/config/get-config-template'
 import { type AnyDescriptor } from 'source/types/common/fsal'
-import type { DocumentManagerIPCAPI } from 'source/app/service-providers/documents'
+import type { DocumentManagerIPCAPI, DocumentsUpdateContext } from 'source/app/service-providers/documents'
+import type { FSALEventPayload } from 'source/app/service-providers/fsal'
+import type { QuartoProjectInfo } from '@common/quarto/project-info'
 import { TaskStatus } from 'source/pinia/lrt-store'
 import PopoverLRT from './PopoverLRT.vue'
 
@@ -338,6 +346,83 @@ const sidebarsBeforeDistractionfree = ref<{ fileManager: boolean, sidebar: boole
 
 const sidebarVisible = computed<boolean>(() => configStore.config.window.sidebarVisible)
 const activeFile = computed(() => documentTreeStore.lastLeafActiveFile)
+const quartoRendering = ref(false)
+let quartoRequest = 0
+let quartoRefreshTimer: ReturnType<typeof setTimeout>|undefined
+
+watch(() => activeFile.value?.path, path => {
+  clearTimeout(quartoRefreshTimer)
+  if (windowStateStore.quartoProject?.chapters.some(chapter => chapter.path === path) !== true) {
+    windowStateStore.quartoProject = undefined
+  }
+  loadQuartoProject()
+}, { immediate: true })
+
+function loadQuartoProject (): void {
+  const request = ++quartoRequest
+  const path = activeFile.value?.path
+  if (path === undefined || !hasMarkdownExt(path)) {
+    return
+  }
+
+  ipcRenderer.invoke('application', { command: 'quarto-project-get', payload: { path } })
+    .then((project: QuartoProjectInfo|undefined) => {
+      if (request === quartoRequest) {
+        windowStateStore.quartoProject = project
+      }
+    })
+    .catch(error => {
+      if (request === quartoRequest) {
+        windowStateStore.quartoProject = undefined
+      }
+      console.error('Could not read Quarto book', error)
+    })
+}
+
+function scheduleQuartoRefresh (path: string|undefined): void {
+  if (path === undefined) {
+    return
+  }
+  const project = windowStateStore.quartoProject
+  if (/^_quarto\.ya?ml$/i.test(pathBasename(path)) || project?.chapters.some(chapter => chapter.path === path) === true) {
+    clearTimeout(quartoRefreshTimer)
+    quartoRefreshTimer = setTimeout(loadQuartoProject, 450)
+  }
+}
+
+const stopQuartoDocumentUpdates = ipcRenderer.on('documents-update', (_, message: { event: DP_EVENTS, context: DocumentsUpdateContext }) => {
+  if (message.event === DP_EVENTS.FILE_SAVED ||
+    (message.event === DP_EVENTS.CHANGE_FILE_STATUS && message.context.status === 'modification')) {
+    scheduleQuartoRefresh(message.context.filePath)
+  }
+})
+const stopQuartoFileUpdates = ipcRenderer.on('fsal-event', (_, message: FSALEventPayload) => {
+  scheduleQuartoRefresh('descriptor' in message ? message.descriptor.path : message.path)
+})
+
+onBeforeUnmount(() => {
+  clearTimeout(quartoRefreshTimer)
+  quartoRequest++
+  stopQuartoDocumentUpdates()
+  stopQuartoFileUpdates()
+})
+
+async function renderQuartoBook (): Promise<void> {
+  const path = activeFile.value?.path
+  if (path === undefined || windowStateStore.quartoProject?.canRender !== true || quartoRendering.value) {
+    return
+  }
+
+  quartoRendering.value = true
+  try {
+    await ipcRenderer.invoke('application', { command: 'quarto-project-render', payload: { path } })
+  } catch (error) {
+    console.error('Could not render Quarto book', error)
+  } finally {
+    quartoRendering.value = false
+  }
+}
+
 const shouldCountChars = computed<boolean>(() => configStore.config.editor.countChars)
 const windowTitle = computed<string>(() => {
   if (activeFile.value === undefined) {
@@ -845,9 +930,10 @@ function jtl (filePath: string, lineNumber: number, newTab: boolean): void {
       command: 'open-file',
       payload: { path: filePath, windowId, leafId: containingLeaf.id }
     } as DocumentManagerIPCAPI)
-      .then(() => {
-        // Re-execute the jtl command
-        setTimeout(() => jtl(filePath, lineNumber, newTab), WAIT_TIME)
+      .then((opened: boolean) => {
+        if (opened) {
+          setTimeout(() => jtl(filePath, lineNumber, newTab), WAIT_TIME)
+        }
       })
       .catch(e => console.error(e))
     return
@@ -865,9 +951,10 @@ function jtl (filePath: string, lineNumber: number, newTab: boolean): void {
       newTab
     }
   } as DocumentManagerIPCAPI)
-    .then(() => {
-      // Re-execute the jtl command
-      setTimeout(() => jtl(filePath, lineNumber, newTab), WAIT_TIME)
+    .then((opened: boolean) => {
+      if (opened) {
+        setTimeout(() => jtl(filePath, lineNumber, newTab), WAIT_TIME)
+      }
     })
     .catch(e => console.error(e))
 }

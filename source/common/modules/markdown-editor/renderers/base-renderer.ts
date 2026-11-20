@@ -140,7 +140,8 @@ function renderWidgets (
  */
 export function renderInlineWidgets (
   shouldHandleNode: (node: SyntaxNodeRef) => boolean,
-  createWidget: (state: EditorState, node: SyntaxNodeRef) => WidgetType|undefined
+  createWidget: (state: EditorState, node: SyntaxNodeRef) => WidgetType|undefined,
+  refreshOn?: (update: ViewUpdate) => boolean
 ) {
   const plugin = ViewPlugin.fromClass(class {
     decorations: DecorationSet
@@ -150,7 +151,7 @@ export function renderInlineWidgets (
     }
 
     update (update: ViewUpdate): void {
-      if (update.docChanged || update.viewportChanged || update.selectionSet) {
+      if (update.docChanged || update.viewportChanged || update.selectionSet || refreshOn?.(update) === true) {
         this.decorations = renderWidgets(update.view.state, update.view.visibleRanges, shouldHandleNode, createWidget)
       }
     }

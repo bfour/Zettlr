@@ -16,25 +16,49 @@ import { renderInlineWidgets } from './base-renderer'
 import { type SyntaxNodeRef, type SyntaxNode } from '@lezer/common'
 import { WidgetType, type EditorView } from '@codemirror/view'
 import { type EditorState } from '@codemirror/state'
+import type { Completion } from '@codemirror/autocomplete'
 import clickAndSelect from './click-and-select'
 import { CITEPROC_MAIN_DB } from '@dts/common/citeproc'
 import { citationMenu } from '../context-menu/citation-menu'
 import { configField } from '../util/configuration'
+import { quartoSectionsField } from '../plugins/quarto-sections'
+import { citekeyUpdateField } from '../autocomplete/citations'
 import { type Citation, NODES, nodeToCiteItem } from '../parser/citation-parser'
 import { sanitizeHTML } from 'source/common/util/sanitize-html'
 
 class CitationWidget extends WidgetType {
-  constructor (readonly citation: Citation, readonly rawCitation: string, readonly node: SyntaxNode) {
+  constructor (
+    readonly citation: Citation,
+    readonly rawCitation: string,
+    readonly node: SyntaxNode,
+    readonly library: string,
+    readonly libraryItems: Completion[]|undefined,
+    readonly quartoLabels?: Array<string|undefined>
+  ) {
     super()
   }
 
   eq (other: CitationWidget): boolean {
-    return JSON.stringify(other.citation) === JSON.stringify(this.citation)
+    return other.library === this.library && other.libraryItems === this.libraryItems &&
+      JSON.stringify(other.citation) === JSON.stringify(this.citation) &&
+      JSON.stringify(other.quartoLabels) === JSON.stringify(this.quartoLabels)
   }
 
   toDOM (view: EditorView): HTMLElement {
     const { items } = this.citation
-    const hasCrossref = items.every(i => /^fig:|tbl:|eq:|sec:/.test(i.id))
+    if (this.quartoLabels !== undefined) {
+      const elem = document.createElement('span')
+      elem.classList.add('citeproc-citation')
+      elem.textContent = items.map((item, index) => this.quartoLabels?.[index] ?? `@${item.id}`).join('; ')
+      elem.title = items.map(item => item.id).join(', ')
+      if (this.quartoLabels.some(label => label === undefined)) {
+        elem.classList.add('error')
+      }
+      elem.addEventListener('click', clickAndSelect(view))
+      return elem
+    }
+
+    const hasCrossref = items.every(i => /^(?:fig|tbl|eq|sec):/.test(i.id))
 
     if (hasCrossref) {
       // We're not dealing with a citation, but rather with a crossref-style
@@ -60,9 +84,7 @@ class CitationWidget extends WidgetType {
       return elem
     }
 
-    const config = view.state.field(configField).metadata.library
-    const library = config === '' ? CITEPROC_MAIN_DB : config
-    const callback = window.getCitationCallback(library)
+    const callback = window.getCitationCallback(this.library)
     const renderedCitation = callback(this.citation.items, this.citation.composite)
 
     const elem = document.createElement('span')
@@ -95,11 +117,27 @@ function shouldHandleNode (node: SyntaxNodeRef): boolean {
 function createWidget (state: EditorState, node: SyntaxNodeRef): CitationWidget|undefined {
   try {
     const citation = nodeToCiteItem(node.node, state.sliceDoc())
-    return new CitationWidget(citation, state.sliceDoc(node.from, node.to), node.node)
+    const sections = state.field(quartoSectionsField, false)
+    const labels = sections !== undefined && citation.items.every(item => item.id.startsWith('sec-'))
+      ? citation.items.map(({ id }) => {
+        const target = sections.get(id)
+        return target === undefined ? undefined : target.title || target.id
+      })
+      : undefined
+    const library = state.field(configField).metadata.library || CITEPROC_MAIN_DB
+    return new CitationWidget(
+      citation, state.sliceDoc(node.from, node.to), node.node, library, state.field(citekeyUpdateField, false), labels
+    )
   } catch (err) {
     // nodeToCiteItem throws if it is unhappy
     return undefined
   }
 }
 
-export const renderCitations = renderInlineWidgets(shouldHandleNode, createWidget)
+export const renderCitations = renderInlineWidgets(
+  shouldHandleNode,
+  createWidget,
+  update => update.startState.field(quartoSectionsField, false) !== update.state.field(quartoSectionsField, false) ||
+    update.startState.field(citekeyUpdateField, false) !== update.state.field(citekeyUpdateField, false) ||
+    update.startState.field(configField).metadata.library !== update.state.field(configField).metadata.library
+)

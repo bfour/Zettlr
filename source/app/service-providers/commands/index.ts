@@ -38,6 +38,7 @@ import LanguageTool from './language-tool'
 import OpenAttachment from './open-attachment'
 import OpenAuxWindow from './open-aux-window'
 import Print from './print'
+import QuartoProject from './quarto-project'
 import RequestMove from './request-move'
 import RootClose from './root-close'
 import RootOpen from './root-open'
@@ -80,6 +81,7 @@ export const commands = [
   OpenAttachment,
   OpenAuxWindow,
   Print,
+  QuartoProject,
   RenameTag,
   RequestMove,
   RootClose,
