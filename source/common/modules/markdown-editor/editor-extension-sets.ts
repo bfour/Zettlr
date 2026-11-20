@@ -56,6 +56,7 @@ import { distractionFree } from './plugins/distraction-free'
 import { languageTool } from './linters/language-tool'
 import { statusbar } from './statusbar'
 import { renderers } from './renderers'
+import { documentCommentsField } from './util/document-comments'
 import { mdPasteDropHandlers } from './plugins/md-paste-drop-handlers'
 import { footnoteGutter } from './plugins/footnote-gutter'
 import { yamlFrontmatterLint } from './linters/yaml-frontmatter-lint'
@@ -313,6 +314,7 @@ export function getMarkdownExtensions (options: CoreExtensionOptions): Extension
     }),
     // ... which can then be styled with a highlighter
     markdownSyntaxHighlighter(),
+    documentCommentsField,
     renderers(options.initialConfig),
     showLineNumbers(options.initialConfig.showMarkdownLineNumbers),
     mdLinterExtensions,

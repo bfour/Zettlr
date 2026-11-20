@@ -9,6 +9,7 @@
       'code-file': !isMarkdown,
       fullscreen: distractionFree
     }"
+    v-on:zettlr-annotate-selection="openCommentComposer"
   >
     <div v-bind:id="`cm-text-${props.leafId}`">
       <!-- This element will be replaced with Codemirror's wrapper element on mount -->
@@ -44,7 +45,6 @@ import { type EditorConfigOptions } from '@common/modules/markdown-editor/util/c
 import type { CodeFileDescriptor, DirDescriptor, MDFileDescriptor } from '@dts/common/fsal'
 import { getBibliographyForDescriptor as getBibliography } from '@common/util/get-bibliography-for-descriptor'
 import { EditorSelection } from '@codemirror/state'
-import { language } from '@codemirror/language'
 import { EditorView } from '@codemirror/view'
 import { documentAuthorityIPCAPI } from '@common/modules/markdown-editor/util/ipc-api'
 import { useConfigStore, useDocumentTreeStore, useTagsStore, useWindowStateStore, useWorkspaceStore } from 'source/pinia'
@@ -56,7 +56,7 @@ import type { FileContentSearchResult } from 'source/app/service-providers/searc
 import type { CustomEditorShortcut } from 'source/common/modules/markdown-editor/keymaps/shortcuts'
 import type { CitationRecord } from 'source/common/modules/markdown-editor/autocomplete/citations'
 import type { FileRecord } from 'source/common/modules/markdown-editor/autocomplete/files'
-import { getDocumentComments } from './util/document-comments'
+import { documentCommentsField, encodeAnnotation } from '@common/modules/markdown-editor/util/document-comments'
 import getDocumentTitle from './util/get-document-title'
 
 const ipcRenderer = window.ipc
@@ -188,6 +188,9 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  if (windowStateStore.commentDraft?.leafId === props.leafId) {
+    windowStateStore.commentDraft = undefined
+  }
   if (currentEditor !== null) {
     if (windowStateStore.commentsByLeaf.get(props.leafId)?.path === currentEditor.documentPath) {
       windowStateStore.commentsByLeaf.delete(props.leafId)
@@ -585,16 +588,17 @@ function updateComments (editor: MarkdownEditor): void {
   }
 
   const view = editor.instance
-  const parser = view.state.facet(language)?.parser
-  if (parser === undefined) {
+  const comments = view.state.field(documentCommentsField, false)
+  if (comments === undefined) {
     return
   }
 
   const doc = view.state.doc
   windowStateStore.commentsByLeaf.set(props.leafId, {
     path: editor.documentPath,
-    comments: getDocumentComments(doc, parser),
-    selectComment: ({ from, to }: { from: number, to: number }) => {
+    comments: comments.toSorted((a, b) => (a.anchor?.from ?? a.from) - (b.anchor?.from ?? b.from)),
+    selectComment: (comment) => {
+      const { from, to } = comment.anchor ?? comment
       if (currentEditor !== editor || view.state.doc !== doc) {
         return
       }
@@ -606,6 +610,51 @@ function updateComments (editor: MarkdownEditor): void {
       view.focus()
     }
   })
+}
+
+function openCommentComposer (event: Event): void {
+  const editor = currentEditor
+  if (editor === null || !isMarkdown.value) {
+    return
+  }
+  const view = editor.instance
+  const { doc, readOnly, selection } = view.state
+  const { from, to } = selection.main
+  if (readOnly || from === to) {
+    return
+  }
+
+  event.preventDefault()
+  windowStateStore.commentDraft = {
+    leafId: props.leafId,
+    path: editor.documentPath,
+    quote: doc.sliceString(from, to),
+    submit: text => {
+      if (currentEditor !== editor || view.state.doc !== doc || view.state.readOnly) {
+        return false
+      }
+
+      const lastLine = doc.line(doc.lines)
+      const lastComment = view.state.field(documentCommentsField).at(-1)
+      const separator = lastComment?.annotation === true && lastComment.to === doc.length - 1
+        ? ''
+        : lastLine.length === 0 ? '\n' : '\n\n'
+      const annotation = encodeAnnotation(doc, from, to, text)
+      const transaction = view.state.update({
+        changes: { from: doc.length, insert: separator + annotation + '\n' },
+        userEvent: 'input'
+      })
+      const added = transaction.state.field(documentCommentsField).at(-1)
+      if (added?.from !== doc.length + separator.length || added.anchor === undefined) {
+        return false
+      }
+      view.dispatch(transaction)
+      return true
+    }
+  }
+
+  configStore.setConfigValue('window.currentSidebarTab', 'comments')
+  configStore.setConfigValue('window.sidebarVisible', true)
 }
 
 function jtl (lineNumber: number): void {

@@ -24,6 +24,7 @@ import { renderMermaid } from './render-mermaid'
 import { renderTables } from '../table-editor'
 import { renderIframes } from './render-iframes'
 import { renderEmphasis } from './render-emphasis'
+import { renderComments } from './render-comments'
 import { renderPersistentMarks } from './render-persistent-marks'
 import { renderPandoc } from './render-pandoc-div-span'
 import { configField, configUpdateEffect, type EditorConfiguration } from '../util/configuration'
@@ -62,6 +63,7 @@ function configureRenderers (config: Partial<EditorConfiguration>, ext?: Extensi
   updateExtension(renderPersistentMarks, true, ext)
 
   updateExtension(renderMermaid, isPreview, ext)
+  updateExtension(renderComments, isPreview, ext)
 
   updateExtension(renderImages, isPreview && config.renderImages, ext)
   updateExtension(renderLinks, isPreview && config.renderLinks, ext)

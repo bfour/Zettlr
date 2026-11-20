@@ -353,15 +353,22 @@ export function applyCode (target: EditorView): boolean {
 }
 
 /**
- * Replaces the existing selection ranges with a comment.
+ * Requests an annotation for selected text or inserts an HTML comment.
  *
  * @param   {EditorView}  target  The target view
  *
  * @return  {boolean}             Whether the command was applicable
  */
 export function applyComment (target: EditorView): boolean {
-  if (!viewContainsMarkdown(target)) {
+  if (target.state.readOnly || !viewContainsMarkdown(target)) {
     return false
+  }
+
+  if (!target.state.selection.main.empty) {
+    const request = new Event('zettlr-annotate-selection', { bubbles: true, cancelable: true })
+    if (!target.dom.dispatchEvent(request)) {
+      return true
+    }
   }
 
   applyInlineMarkup(target, '<!-- ', ' -->')
