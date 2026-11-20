@@ -155,16 +155,7 @@ developing, you'll need to have the following installed on your computer:
    as we do not commit `package-lock.json`-files and many commands require yarn.
    You can install this globally using `npm install -g yarn` or Homebrew, if you
    are on macOS.
-3. On Windows, we recommend to
-   [install the Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install),
-   which will make many of the next steps easier.
-4. A few command-line utilities that various scripts require for running the
-   development builds:
-    * [`cURL`](https://curl.se/download.html) (required by the Pandoc download
-      script)
-    * `unzip` (required by the Pandoc download script)
-    * [`jq`](https://jqlang.github.io/jq/) (required by the i18n script)
-5. An appropriate build toolchain for your operating system, since Zettlr
+3. An appropriate build toolchain for your operating system, since Zettlr
    requires a few native C++-modules that must be compiled before running the
    app:
     * **macOS**: On macOS, installing the XCode command-line tools via
@@ -175,6 +166,10 @@ developing, you'll need to have the following installed on your computer:
     * **Linux**: On Linux, there are a variety of compatible toolchains
       available, sometimes they are already preinstalled. Refer to your
       distribution's manual for more information.
+
+4. [jq](https://jqlang.github.io/jq/) if you run the i18n script.
+
+The development build downloads and extracts Pandoc using Node.js.
 
 Then, simply clone the repository and install the dependencies on your local
 computer:
@@ -481,8 +476,7 @@ Pandoc.
 
 To disable bundling of Pandoc, you need to set the environment variable to `0`,
 e.g.: `export BUNDLE_PANDOC=0`. This will cause the build script to neither
-download nor bundle Pandoc. (This also absolves your build environment from the
-specific requirements for the Pandoc download script identified above.)
+download nor bundle Pandoc.
 
 > [!CAUTION]
 > Zettlr users expect Pandoc to be present, since otherwise they will not be

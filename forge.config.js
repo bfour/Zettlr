@@ -1,61 +1,9 @@
-const { spawn } = require('child_process')
 const fs = require('fs').promises
 const path = require('path')
 const { FusesPlugin } = require('@electron-forge/plugin-fuses')
 const { FuseV1Options, FuseVersion } = require('@electron/fuses')
 const { getGitHash } = require('./scripts/get-git-hash.js')
-
-/**
- * This function runs the get-pandoc script in order to download the requested
- * version of Pandoc. This way we can guarantee that the correct Pandoc version
- * will be present when packaging the application.
- *
- * @param   {string}  platform  The platform for which to download.
- * @param   {string}  arch      The architecture for which to download.
- */
-async function downloadPandoc (platform, arch) {
-  // Check we have a valid platform ...
-  if (![ 'darwin', 'linux', 'win32' ].includes(platform)) {
-    throw new Error(`Cannot download Pandoc: Platform ${platform} is not recognised!`)
-  }
-
-  // ... and a valid architecture.
-  if (![ 'x64', 'arm' ].includes(arch)) {
-    throw new Error(`Cannot download Pandoc: Architecture ${arch} is not supported!`)
-  }
-
-  // Now run the script and wait for it to finish.
-  await new Promise((resolve, reject) => {
-    const script = './scripts/get-pandoc.sh'
-    const [ command, args ] = process.platform === 'win32'
-      ? [ 'bash.exe', [ script, platform, arch ] ]
-      : [ script, [ platform, arch ] ]
-    const shellProcess = spawn(command, args, {
-      cwd: __dirname,
-      stdio: [ 'ignore', 'ignore', 'pipe' ]
-    })
-
-    // WSL can print warnings to stderr even when the script succeeds.
-    let stderrDetails = ''
-    shellProcess.stderr.setEncoding('utf8')
-    shellProcess.stderr.on('data', data => {
-      stderrDetails += data
-    })
-
-    shellProcess.once('close', (code, signal) => {
-      if (code === 0) {
-        resolve()
-        return
-      }
-
-      const reason = signal === null ? `exited with code ${code}` : `was terminated by ${signal}`
-      const details = stderrDetails.trim()
-      reject(new Error(`Failed to download Pandoc: Process ${reason}${details === '' ? '.' : `\n${details}`}`))
-    })
-
-    shellProcess.once('error', reject)
-  })
-}
+const { downloadPandoc } = require('./scripts/get-pandoc.js')
 
 /**
  * Since all our renderers share the same static HTML file and the same preload
@@ -129,7 +77,7 @@ module.exports = {
         try {
           await fs.lstat(path.join(__dirname, `./resources/pandoc-${platform}-${arch}`))
         } catch (err) {
-          await downloadPandoc(platform, arch)
+          await downloadPandoc(platform, targetArch)
         }
 
         await fs.copyFile(path.join(__dirname, `./resources/pandoc-${platform}-${arch}`), path.join(__dirname, './resources/pandoc'))
