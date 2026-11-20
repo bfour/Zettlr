@@ -26,33 +26,34 @@ async function downloadPandoc (platform, arch) {
 
   // Now run the script and wait for it to finish.
   await new Promise((resolve, reject) => {
-    const argWin = [ 'bash.exe', [ './scripts/get-pandoc.sh', platform, arch ] ]
-    const argUnix = [ './scripts/get-pandoc.sh', [ platform, arch ] ]
-    // Use the spread operator to spawn the process using the correct arguments.
-    const shellProcess = (process.platform === 'win32') ? spawn(...argWin) : spawn(...argUnix)
-
-    // To not mess with Electron forge's output, suppress this processes output.
-    // But we should reject if there's any error output.
-    let shouldReject = false
-    let stderrDetails = ""
-    shellProcess.stderr.on('data', (_data) => {
-      shouldReject = true
-      stderrDetails += _data
+    const script = './scripts/get-pandoc.sh'
+    const [ command, args ] = process.platform === 'win32'
+      ? [ 'bash.exe', [ script, platform, arch ] ]
+      : [ script, [ platform, arch ] ]
+    const shellProcess = spawn(command, args, {
+      cwd: __dirname,
+      stdio: [ 'ignore', 'ignore', 'pipe' ]
     })
 
-    // Resolve or reject once the process has finished.
-    shellProcess.on('close', (code, _signal) => {
-      if (code !== 0 || shouldReject) {
-        reject(new Error(`Failed to download Pandoc: Process quit with code ${code}. If the code is 0, then there was error output. ${stderrDetails ? ("Error output: " + stderrDetails) : ""}`))
-      } else {
+    // WSL can print warnings to stderr even when the script succeeds.
+    let stderrDetails = ''
+    shellProcess.stderr.setEncoding('utf8')
+    shellProcess.stderr.on('data', data => {
+      stderrDetails += data
+    })
+
+    shellProcess.once('close', (code, signal) => {
+      if (code === 0) {
         resolve()
+        return
       }
+
+      const reason = signal === null ? `exited with code ${code}` : `was terminated by ${signal}`
+      const details = stderrDetails.trim()
+      reject(new Error(`Failed to download Pandoc: Process ${reason}${details === '' ? '.' : `\n${details}`}`))
     })
 
-    // Reject on errors.
-    shellProcess.on('error', (err) => {
-      reject(err)
-    })
+    shellProcess.once('error', reject)
   })
 }
 

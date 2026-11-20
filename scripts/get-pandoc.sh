@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eo pipefail
 
 # This script downloads and extracts the pandoc releases. This script needs
 # to be updated in order to ship newer versions. The versions are hardcoded here
@@ -34,22 +35,8 @@ then
     echo ""
     echo "    The first parameter (the platform) is required."
     echo "    The second parameter (the architecture) defaults to x64, if not provided."
-    exit
+    exit 1
 fi
-
-# This script now makes use of output redirection. In general, these are numbers:
-# 0: stdin | 1: stdout | 2: stderr
-#
-# General syntax: "from">"to"
-# So to redirect output to files, we can append 1> log or 2> error.log to a command
-#
-# To redirect output in between the streams, we basically need to "point" to
-# the desired target, e.g. 1>&2 (stdout to stderr) or 2>&1 (stderr to stdout).
-#
-# To suppress output, simply redirect to /dev/null, e.g. 1> /dev/null
-# (Note the space after the >, which is required for file NAMES instead of numbers)
-#
-# For a good explanation of redirection rules: https://linuxize.com/post/bash-redirect-stderr-stdout/
 
 if [ "$ARCH" != "x64" ] && [ "$ARCH" != "arm" ]
 then
@@ -76,66 +63,42 @@ then
     RELEASE="$PANDOC_LINUX_X64"
 elif [ "$PLATFORM" == "win32" ] && [ "$ARCH" == "arm" ]
 then
-    echo "Currently there is no ARM-release for Windows. Aborting." 1>&2 # Redirect echo's stdout to stderr
-    exit
+    echo "Currently there is no ARM-release for Windows. Aborting." >&2
+    exit 1
 elif [ "$PLATFORM" == "win32" ] && [ "$ARCH" == "x64" ]
 then
     RELEASE="$PANDOC_WIN32_X64"
 fi
 
-# First, cd into the resources directory
-cd "$(dirname "$0")"
-cd ../resources
+# Stage the download beside the finished binary and clean up on failure.
+RESOURCES_DIR="$(CDPATH= cd -- "$(dirname "$0")/../resources" && pwd)"
+DOWNLOAD_DIR="$(mktemp -d "$RESOURCES_DIR/pandoc-download.XXXXXX")"
+trap 'rm -rf -- "$DOWNLOAD_DIR"' EXIT
+cd "$DOWNLOAD_DIR"
 
-echo "Working directory is $(pwd)"
-
-# Retrieve only the basename of the full path
 BASENAME="${RELEASE##*/}"
 echo "Downloading: $BASENAME ..."
-curl -sL "$RELEASE" -o "$BASENAME" # Download to current working dir
+curl --fail --silent --show-error --location "$RELEASE" -o "$BASENAME"
 echo "Extracting ..."
 
-# Now we need to extract it and handle it appropriately
 if [ "$PLATFORM" == "darwin" ]
 then
     # macOS builds are a zip file where the binary is in ./bin
-    unzip -qq $BASENAME # -qq makes unzip quiet
-    EXTRACTEDFOLDER="$(unzip -Z -1 $BASENAME | head -1)"
-    echo "Extracted to: $EXTRACTEDFOLDER"
-    echo "Moving binary from ./bin/pandoc to resources directory ..."
-    # Now move the binary
-    cd $EXTRACTEDFOLDER
-    mv ./bin/pandoc ../pandoc-darwin-$ARCH
-    cd ..
+    unzip -qq "$BASENAME"
+    FIRST_ENTRY="$(unzip -Z -1 "$BASENAME" | sed -n '1p')"
+    mv "${FIRST_ENTRY%%/*}/bin/pandoc" "$RESOURCES_DIR/pandoc-darwin-$ARCH"
 elif [ "$PLATFORM" == "linux" ]
 then
     # Linux builds are a tar.gz file where the binary is in ./bin
-    tar -xzf $BASENAME
-    EXTRACTEDFOLDER="$(tar -tf $BASENAME | head -1)"
-    echo "Extracted to: $EXTRACTEDFOLDER"
-    echo "Moving binary from ./bin/pandoc to resources directory ..."
-    cd $EXTRACTEDFOLDER
-    mv ./bin/pandoc ../pandoc-linux-$ARCH
-    cd ..
+    tar -xzf "$BASENAME"
+    FIRST_ENTRY="$(tar -tzf "$BASENAME" | sed -n '1p')"
+    mv "${FIRST_ENTRY%%/*}/bin/pandoc" "$RESOURCES_DIR/pandoc-linux-$ARCH"
 elif [ "$PLATFORM" == "win32" ]
 then
-    # Windows builds are a zip file where the binary is in .
-    EXTRACTEDFOLDER="pandoc-$VERSION"
-    # Unzip the archive. -qq makes unzip quiet, and -d specifies a custom output
-    # directory. The -j flag instructs unzip not to recreate the folder
-    # structure. The reason is that `unzip -Z -1 $BASENAME | head -1`` will no
-    # longer give us the root folder of the archive. (This was updated on March
-    # 7, 2026, since we had a failing nightly build on Monday, March 2, after
-    # having upgraded to Pandoc 3.9.)
-    unzip -qq -d $EXTRACTEDFOLDER -j $BASENAME
-    echo "Extracted to: $EXTRACTEDFOLDER"
-    cd $EXTRACTEDFOLDER
-    echo "Moving binary from ./ to resources directory ..."
-    mv ./pandoc.exe ../pandoc-win32-$ARCH.exe
-    cd ..
+    # Windows archives can have a top-level folder or the binary at the root.
+    # Unzip with -j to discard the directory paths.
+    unzip -qq -d extracted -j "$BASENAME"
+    mv extracted/pandoc.exe "$RESOURCES_DIR/pandoc-win32-$ARCH.exe"
 fi
 
-# Cleanup
-echo "Cleaning up ..."
-rm -rf $BASENAME $EXTRACTEDFOLDER
 echo "Successfully downloaded Pandoc for $PLATFORM/$ARCH!"

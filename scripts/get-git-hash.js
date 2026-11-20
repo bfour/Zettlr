@@ -1,11 +1,12 @@
 const { spawn } = require('child_process')
+const path = require('path')
 
 module.exports = {
   getGitHash: async function () {
-    const command = 'git rev-parse --short HEAD'
-
     const hash = await new Promise((resolve, reject) => {
-      const process = spawn(command, { shell: true })
+      const process = spawn('git', [ 'rev-parse', '--short', 'HEAD' ], {
+        cwd: path.join(__dirname, '..')
+      })
       let returnValue = ''
       process.stdout.on('data', (chunk) => {
         if (typeof chunk === 'string') {
