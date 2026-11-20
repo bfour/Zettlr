@@ -17,7 +17,8 @@
 import { defineStore } from 'pinia'
 import type { DocumentInfo } from 'source/common/modules/markdown-editor'
 import type { ToCEntry } from 'source/common/modules/markdown-editor/plugins/toc-field'
-import { computed, ref, type Ref } from 'vue'
+import type { DocumentComment } from 'source/win-main/util/document-comments'
+import { computed, ref, shallowReactive, type Ref } from 'vue'
 import { type WritingTarget } from '@providers/targets'
 import type { AssetsProviderIPCAPI } from 'source/app/service-providers/assets'
 import type { SearchResultWrapper } from 'source/win-main/GlobalSearch.vue'
@@ -52,6 +53,11 @@ export const useWindowStateStore = defineStore('window-state', () => {
   const distractionFreeMode = ref<undefined|string>(undefined)
   const activeDocumentInfo = ref<undefined|DocumentInfo>(undefined)
   const tableOfContents = ref<ToCEntry[]|undefined>(undefined)
+  const commentsByLeaf = shallowReactive(new Map<string, {
+    path: string
+    comments: DocumentComment[]
+    selectComment: (comment: DocumentComment) => void
+  }>())
   const snippets = ref<SnippetRecord[]>([])
   const writingTargets = ref<WritingTarget[]>([])
 
@@ -102,6 +108,7 @@ export const useWindowStateStore = defineStore('window-state', () => {
     distractionFreeMode,
     activeDocumentInfo,
     tableOfContents,
+    commentsByLeaf,
     searchResults,
     addSearchResult,
     maxSearchResultWeight,

@@ -15,6 +15,7 @@
         v-on:move-section="emit('move-section', $event)"
         v-on:jump-to-line="emit('jump-to-line', $event)"
       ></ToCTab>
+      <CommentsTab v-show="currentTab === 'comments'"></CommentsTab>
       <ReferencesTab v-show="currentTab === 'references'"></ReferencesTab>
       <RelatedFilesTab v-show="currentTab === 'relatedFiles'"></RelatedFilesTab>
       <OtherFilesTab v-show="currentTab === 'attachments'"></OtherFilesTab>
@@ -40,6 +41,7 @@
 import { trans } from '@common/i18n-renderer'
 import TabBar from '@common/vue/TabBar.vue'
 import { computed } from 'vue'
+import CommentsTab from './CommentsTab.vue'
 import ToCTab from './ToCTab.vue'
 import ReferencesTab from './ReferencesTab.vue'
 import RelatedFilesTab from './RelatedFilesTab.vue'
@@ -61,6 +63,12 @@ const tabs = [
     id: 'toc',
     target: 'sidebar-toc',
     label: trans('Table of contents')
+  },
+  {
+    icon: 'chat-bubble',
+    id: 'comments',
+    target: 'sidebar-comments',
+    label: trans('Comments')
   },
   {
     icon: 'book',
