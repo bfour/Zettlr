@@ -19,7 +19,7 @@ import {
   acceptCompletion, closeCompletion, moveCompletionSelection,
   startCompletion, deleteBracketPair
 } from '@codemirror/autocomplete'
-import { requestCitationPicker } from '../autocomplete/citations'
+import { acceptCitationCompletion, requestCitationPicker } from '../autocomplete/citations'
 import {
   cursorCharLeft, selectCharLeft, cursorGroupLeft, selectGroupLeft,
   cursorLineBoundaryLeft, selectLineBoundaryLeft, cursorCharRight,
@@ -125,7 +125,7 @@ export function mainEditorKeybindings (customShortcutMap: CustomEditorShortcut[]
     { key: 'Shift-Tab', run: indentLess },
     
     // Enter
-    ...(autocompleteWithEnter ? [{ key: 'Enter', run: acceptCompletion }] : []),
+    { key: 'Enter', run: autocompleteWithEnter ? acceptCompletion : acceptCitationCompletion },
     { key: 'Enter', run: handleAutocorrectEnter },
     { key: 'Enter', run: moveNextRow },
     { key: 'Enter', run: insertNewlineContinueMarkup },
