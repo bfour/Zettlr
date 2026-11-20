@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import type { QuartoProjectInfo } from '@common/quarto/project-info'
 import type { AnyDescriptor, DirDescriptor, MDFileDescriptor } from '@dts/common/fsal'
 import { collectWorkspaceCitekeys, getRendererBibliography } from '../source/win-main/util/workspace-citations'
 
@@ -26,6 +27,34 @@ describe('Workspace citations', () => {
     assert.deepEqual(
       collectWorkspaceCitekeys(active, getRendererBibliography(active), workspaceMap, descriptors, [ 'live' ], modified),
       new Set([ 'live', 'draft' ])
+    )
+  })
+
+
+  it('inherits a book bibliography and ranks references within the configured chapters', () => {
+    const active = markdownFile('/notes/book/index.qmd', [])
+    const anotherChapter = markdownFile('/notes/book/chapter.qmd', [ 'book-reference' ])
+    const localOverride = markdownFile('/notes/book/afterword.qmd', [ 'other-reference' ], 'other.bib')
+    const outside = markdownFile('/notes/book/notes.md', [ 'outside-book' ], 'references.bib')
+    const project: QuartoProjectInfo = {
+      root: '/notes/book',
+      configPath: '/notes/book/_quarto.yaml',
+      chapters: [ active, anotherChapter, localOverride ].map(file => ({ path: file.path })),
+      bibliography: [ '/notes/book/references.bib' ],
+      sections: { targets: [], references: [], duplicateIds: [], unresolved: [] },
+      canRender: true
+    }
+    const descriptors = new Map<string, AnyDescriptor>([
+      [ project.root, directory(project.root) ],
+      ...[ active, anotherChapter, localOverride, outside ].map(file => [ file.path, file ] as const)
+    ])
+    const workspaces = new Map([[ project.root, [ ...descriptors.keys() ] ]])
+
+    assert.equal(getRendererBibliography(active, project), '/notes/book/references.bib')
+    assert.equal(getRendererBibliography(localOverride, project), '/notes/book/other.bib')
+    assert.deepEqual(
+      collectWorkspaceCitekeys(active, '/notes/book/references.bib', workspaces, descriptors, [], new Map(), project),
+      new Set([ 'book-reference' ])
     )
   })
 

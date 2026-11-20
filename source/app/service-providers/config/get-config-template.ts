@@ -248,7 +248,7 @@ export interface ConfigOptions {
     vibrancy: boolean
     sidebarVisible: boolean
     fileManagerVisible: boolean
-    currentSidebarTab: 'toc'|'references'|'relatedFiles'|'attachments'|'comments'
+    currentSidebarTab: 'toc'|'references'|'relatedFiles'|'attachments'|'comments'|'quarto'
     recentGlobalSearches: string[]
   }
   ui: {

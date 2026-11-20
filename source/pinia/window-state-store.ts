@@ -15,6 +15,7 @@
  */
 
 import { defineStore } from 'pinia'
+import type { QuartoProjectInfo } from '@common/quarto/project-info'
 import type { DocumentInfo } from 'source/common/modules/markdown-editor'
 import type { ToCEntry } from 'source/common/modules/markdown-editor/plugins/toc-field'
 import type { DocumentComment } from 'source/common/modules/markdown-editor/util/document-comments'
@@ -52,6 +53,7 @@ export const useWindowStateStore = defineStore('window-state', () => {
   const uncollapsedDirectories = ref<string[]>([])
   const distractionFreeMode = ref<undefined|string>(undefined)
   const activeDocumentInfo = ref<undefined|DocumentInfo>(undefined)
+  const quartoProject = shallowRef<QuartoProjectInfo>()
   const tableOfContents = ref<ToCEntry[]|undefined>(undefined)
   const commentsByLeaf = shallowReactive(new Map<string, {
     path: string
@@ -114,6 +116,7 @@ export const useWindowStateStore = defineStore('window-state', () => {
     distractionFreeMode,
     activeDocumentInfo,
     tableOfContents,
+    quartoProject,
     commentsByLeaf,
     commentDraft,
     searchResults,

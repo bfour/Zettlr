@@ -36,7 +36,12 @@ export default async function environmentCheck (): Promise<void> {
   // This is necessary on macOS and Linux, because GUI applications may not
   // inherit the same PATH environment variable as terminal programs. This is
   // necessary, however, to detect additional helper programs, such as quarto.
+  const inheritedPath = process.env.PATH ?? ''
   fixPath()
+  if (process.env.PATH !== inheritedPath) {
+    const entries = [ process.env.PATH ?? '', inheritedPath ].flatMap(value => value.split(path.delimiter)).filter(Boolean)
+    process.env.PATH = Array.from(new Set(entries)).join(path.delimiter)
+  }
 
   /**
    * Required directories that must exist on the system in order for certain

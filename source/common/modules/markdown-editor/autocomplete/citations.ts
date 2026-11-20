@@ -17,6 +17,7 @@ import { type EditorState, StateEffect, StateField } from '@codemirror/state'
 import { type Command, type EditorView } from '@codemirror/view'
 import { type AutocompletePlugin } from '.'
 import { configField } from '../util/configuration'
+import { quartoSectionsField } from '../plugins/quarto-sections'
 import { extractCitationNodes, nodeToCiteItem } from '../parser/citation-parser'
 
 /**
@@ -58,8 +59,18 @@ function applyCitationSuggestion (view: EditorView, completion: Completion, from
   applyCitationCompletion(view, completion.label, from, to)
 }
 
-export const acceptCitationCompletion: Command = view =>
-  selectedCompletion(view.state)?.apply === applyCitationSuggestion && acceptCompletion(view)
+export const acceptCitationCompletion: Command = view => {
+  const apply = selectedCompletion(view.state)?.apply
+  return (apply === applyCitationSuggestion || apply === applySectionSuggestion) && acceptCompletion(view)
+}
+
+function applySectionSuggestion (view: EditorView, completion: Completion, from: number, to: number): void {
+  view.dispatch({
+    changes: { from, to, insert: completion.label },
+    selection: { anchor: from + completion.label.length },
+    userEvent: 'input.complete'
+  })
+}
 
 /**
  * This function takes the citations from the corresponding database and returns
@@ -199,10 +210,23 @@ export const citations: AutocompletePlugin = {
   },
   entries (ctx, query) {
     query = query.toLowerCase()
+    const sections = ctx.state.field(quartoSectionsField, false)
+    const matches = sections === undefined ? [] : [...sections.values()]
+      .filter(({ id, title }) => id.toLowerCase().includes(query) || title.toLowerCase().includes(query))
+      .map(({ id, title }): Completion => ({
+        label: id,
+        displayLabel: title || id,
+        detail: id,
+        apply: applySectionSuggestion
+      }))
+    if (sections !== undefined && query.startsWith('sec-')) {
+      return matches
+    }
+
     const entries = sortCitationKeysByUsage(ctx.state)
-    return entries.filter(entry => {
+    return matches.concat(entries.filter(entry => {
       return [ entry.label, entry.displayLabel, entry.detail ].some(value => value?.toLowerCase().includes(query) === true)
-    })
+    }))
   },
-  fields: [citekeyUpdateField]
+  fields: [ citekeyUpdateField, quartoSectionsField ]
 }

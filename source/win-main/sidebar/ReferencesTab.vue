@@ -14,35 +14,21 @@
 
 <script setup lang="ts">
 import { trans } from '@common/i18n-renderer'
-import { getBibliographyForDescriptor as getBibliography } from '@common/util/get-bibliography-for-descriptor'
-import { isAbsolutePath, resolvePath } from '@common/util/renderer-path-polyfill'
-import { CITEPROC_MAIN_DB } from '@dts/common/citeproc'
 import { DP_EVENTS } from '@dts/common/documents'
-import { type AnyDescriptor, type MDFileDescriptor } from '@dts/common/fsal'
+import { type AnyDescriptor } from '@dts/common/fsal'
 import { onMounted, ref, computed, watch } from 'vue'
 import { type DocumentsUpdateContext } from 'source/app/service-providers/documents'
-import { useDocumentTreeStore } from 'source/pinia'
+import { useDocumentTreeStore, useWindowStateStore } from 'source/pinia'
 import type { CiteprocProviderIPCAPI } from 'source/app/service-providers/citeproc'
 import localiseNumber from 'source/common/util/localise-number'
 import { hasMarkdownExt } from 'source/common/util/file-extention-checks'
+import { getRendererBibliography } from '../util/workspace-citations'
 import { sanitizeHTML } from 'source/common/util/sanitize-html'
 
 const ipcRenderer = window.ipc
 const documentTreeStore = useDocumentTreeStore()
 
-// This function overwrites the getBibliographyForDescriptor function to ensure
-// the library is always absolute. We have to do it this ridiculously since the
-// function is called in both main and renderer processes, and we still have the
-// issue that path-browserify is entirely unusable.
-function getBibliographyForDescriptor (descriptor: MDFileDescriptor): string {
-  const library = getBibliography(descriptor)
-
-  if (library !== CITEPROC_MAIN_DB && !isAbsolutePath(library)) {
-    return resolvePath(descriptor.dir, library)
-  } else {
-    return library
-  }
-}
+const windowStateStore = useWindowStateStore()
 
 const bibliography = ref<[BibliographyOptions, string[]]|undefined>(undefined)
 
@@ -81,7 +67,7 @@ const approximateWordCount = computed(() => {
 
 const wordCountLabel = computed(() => trans('circa %s words', localiseNumber(approximateWordCount.value)))
 
-watch(activeFile, () => {
+watch([ activeFile, () => windowStateStore.quartoProject?.bibliography[0] ], () => {
   updateBibliography().catch(e => console.error('Could not update bibliography', e))
 })
 
@@ -126,7 +112,7 @@ async function updateBibliography (): Promise<void> {
     return
   }
 
-  const keys = descriptor.citekeys
+  const keys = descriptor.citekeys.slice()
 
   // Now also include potential nocite citations (see https://pandoc.org/MANUAL.html#including-uncited-items-in-the-bibliography)
   if (descriptor.frontmatter != null && 'nocite' in descriptor.frontmatter) {
@@ -146,7 +132,7 @@ async function updateBibliography (): Promise<void> {
   bibliography.value = await ipcRenderer.invoke('citeproc-provider', {
     command: 'get-bibliography',
     payload: {
-      database: getBibliographyForDescriptor(descriptor),
+      database: getRendererBibliography(descriptor, windowStateStore.quartoProject),
       citations: [...new Set(keys)]
     }
   } as CiteprocProviderIPCAPI)

@@ -53,7 +53,7 @@ import { hasMarkdownExt } from '@common/util/file-extention-checks'
 import { DP_EVENTS, type OpenDocument } from '@dts/common/documents'
 import { CITEPROC_MAIN_DB } from '@dts/common/citeproc'
 import { type EditorConfigOptions } from '@common/modules/markdown-editor/util/configuration'
-import type { CodeFileDescriptor, DirDescriptor, MDFileDescriptor } from '@dts/common/fsal'
+import type { AnyDescriptor, CodeFileDescriptor, DirDescriptor, MDFileDescriptor } from '@dts/common/fsal'
 import { EditorSelection } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { documentAuthorityIPCAPI } from '@common/modules/markdown-editor/util/ipc-api'
@@ -64,6 +64,7 @@ import type { CiteprocProviderIPCAPI } from 'source/app/service-providers/citepr
 import type { ProjectInfo } from 'source/common/modules/markdown-editor/plugins/project-info-field'
 import type { FileContentSearchResult } from 'source/app/service-providers/search'
 import type { CustomEditorShortcut } from 'source/common/modules/markdown-editor/keymaps/shortcuts'
+import { quartoSectionsField, quartoSectionsUpdate } from '@common/modules/markdown-editor/plugins/quarto-sections'
 import { getCitationPrefix, insertCitation } from '@common/modules/markdown-editor/autocomplete/citations'
 import { markdownToAST, extractMarkdownCitekeys } from '@common/modules/markdown-utils'
 import { getRendererBibliography, collectWorkspaceCitekeys } from './util/workspace-citations'
@@ -104,7 +105,7 @@ ipcRenderer.on('citeproc-database-updated', (_event, _dbPath: string) => {
     return // Nothing to do
   }
 
-  const library = getRendererBibliography(descriptor)
+  const library = getRendererBibliography(descriptor, quartoBook.value)
   updateCitationKeys(library).catch(e => {
     console.error('Could not update citation keys', e)
   })
@@ -155,7 +156,7 @@ ipcRenderer.on('documents-update', (e, payload: { event: DP_EVENTS, context: Doc
         }
 
         activeFileDescriptor.value = descriptor
-        const library = descriptor.type === 'file' ? getRendererBibliography(descriptor) : undefined
+        const library = descriptor.type === 'file' ? getRendererBibliography(descriptor, quartoBook.value) : undefined
         if (library !== undefined) {
           updateCitationKeys(library).catch(e => console.error('Could not update citation keys', e))
         }
@@ -249,6 +250,37 @@ const tags = computed(() => tagStore.tags)
 const isMarkdown = computed(() => hasMarkdownExt(props.file.path))
 
 const activeFileDescriptor = ref<undefined|MDFileDescriptor|CodeFileDescriptor>(undefined)
+const quartoBook = computed(() => {
+  const project = windowStateStore.quartoProject
+  return project?.chapters.some(chapter => chapter.path === props.file.path) === true ? project : undefined
+})
+
+watch(quartoBook, () => updateQuartoSections())
+watch(() => quartoBook.value?.bibliography[0], () => {
+  const descriptor = activeFileDescriptor.value
+  if (descriptor?.type !== 'file' || currentEditor?.documentPath !== descriptor.path) {
+    return
+  }
+  const library = getRendererBibliography(descriptor, quartoBook.value)
+  currentEditor.setOptions({ metadata: { path: descriptor.path, id: descriptor.id, library } })
+  updateCitationKeys(library).catch(error => console.error('Could not update citation keys', error))
+})
+
+function updateQuartoSections (): void {
+  const editor = currentEditor
+  if (editor === null || !isMarkdown.value || (quartoBook.value === undefined &&
+    editor.instance.state.field(quartoSectionsField, false) === undefined)) {
+    return
+  }
+
+  const sections = quartoBook.value?.sections
+  const duplicates = new Set(sections?.duplicateIds)
+  const labels = sections === undefined
+    ? undefined
+    : new Map(sections.targets.filter(target => !duplicates.has(target.id)).map(target => [ target.id, target ]))
+  editor.instance.dispatch({ effects: quartoSectionsUpdate.of(labels) })
+}
+
 
 const editorConfiguration = computed<EditorConfigOptions>(() => {
   // We update everything, because not so many values are actually updated
@@ -496,6 +528,7 @@ async function getEditorFor (doc: string): Promise<MarkdownEditor> {
   // Update the document info on corresponding events
   editor.on('loaded', () => {
     if (currentEditor === editor) {
+      updateQuartoSections()
       updateComments(editor)
       windowStateStore.activeDocumentInfo = currentEditor.documentInfo
       windowStateStore.tableOfContents = currentEditor.tableOfContents
@@ -579,7 +612,7 @@ async function loadDocument (): Promise<void> {
 
   activeFileDescriptor.value = descriptor
 
-  const library = descriptor.type === 'file' ? getRendererBibliography(descriptor) : undefined
+  const library = descriptor.type === 'file' ? getRendererBibliography(descriptor, quartoBook.value) : undefined
   if (library !== undefined) {
     updateCitationKeys(library).catch(e => console.error('Could not update citation keys', e))
   }
@@ -689,7 +722,7 @@ async function updateCitationKeys (library: string): Promise<void> {
   const citations = await getBibliographyItems(library)
   const descriptor = activeFileDescriptor.value
   if (editor !== null && currentEditor === editor && descriptor?.type === 'file' && descriptor.path === editor.documentPath &&
-    getRendererBibliography(descriptor) === library) {
+    getRendererBibliography(descriptor, quartoBook.value) === library) {
     editor.setCompletionDatabase('citations', citations)
   }
 }
@@ -736,14 +769,23 @@ async function loadCitationPicker (editor: MarkdownEditor): Promise<{ citations:
   if (descriptor?.type !== 'file') {
     throw new Error('Could not read the active Markdown document')
   }
-  const library = getRendererBibliography(descriptor)
-  const [ citations, modifiedCitekeys ] = await Promise.all([
+  const book = quartoBook.value
+  const library = getRendererBibliography(descriptor, book)
+  const descriptors = new Map(workspaceStore.descriptorMap)
+  const unavailable = new Set(book?.unreadableChapters)
+  const missing = book?.chapters.map(chapter => chapter.path)
+    .filter(path => !descriptors.has(path) && !unavailable.has(path)) ?? []
+  const [ citations, modifiedCitekeys, additionalDescriptors ] = await Promise.all([
     getBibliographyItems(library),
-    ipcRenderer.invoke('documents-provider', { command: 'get-modified-citekeys' } as DocumentManagerIPCAPI) as Promise<Map<string, string[]>>
+    ipcRenderer.invoke('documents-provider', { command: 'get-modified-citekeys' } as DocumentManagerIPCAPI) as Promise<Map<string, string[]>>,
+    missing.length === 0 ? [] : ipcRenderer.invoke('fsal', { command: 'get-descriptor', payload: missing }) as Promise<AnyDescriptor[]>
   ])
+  for (const item of additionalDescriptors) {
+    descriptors.set(item.path, item)
+  }
   const activeCitekeys = extractMarkdownCitekeys(markdownToAST(editor.instance.state.sliceDoc()))
   const used = collectWorkspaceCitekeys(
-    descriptor, library, workspaceStore.workspaceMap, workspaceStore.descriptorMap, activeCitekeys, modifiedCitekeys
+    descriptor, library, workspaceStore.workspaceMap, descriptors, activeCitekeys, modifiedCitekeys, book
   )
   return { citations, used }
 }
