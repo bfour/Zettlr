@@ -101,6 +101,44 @@ describe('Preview comments and annotations', () => {
     assert.equal(rebased.sliceDoc(anchor.from, anchor.to), 'Alpha')
   })
 
+  for (const { name, prefix, suffix, atStart } of [
+    { name: 'at the end of the document', prefix: 'Before ', suffix: '', atStart: false },
+    { name: 'in the middle of a paragraph', prefix: 'Before ', suffix: ' and more text.', atStart: false },
+    { name: 'at the start of the selection', prefix: '', suffix: ' and more text.', atStart: true }
+  ]) {
+    it(`keeps inserted lines outside the quote ${name}`, () => {
+      const quote = 'Selected text'
+      const prose = prefix + quote + suffix
+      const from = prefix.length
+      const to = from + quote.length
+      const source = prose + '\n\n' + encodeAnnotation(Text.of([ prose ]), from, to, 'Note')
+      const insert = '\nNew line\n'
+      const state = EditorState.create({ doc: source, extensions: [ markdown(), documentCommentsField, renderComments ] })
+        .update({ changes: { from: atStart ? from : to, insert } }).state
+      const shift = atStart ? insert.length : 0
+      const expected = { from: from + shift, to: to + shift }
+      assert.deepEqual(state.field(documentCommentsField)[0].anchor, expected)
+      assert.deepEqual(decoratedRanges(state)[0], [ expected.from, expected.to ])
+      const reopened = EditorState.create({ doc: state.doc, extensions: [ markdown(), documentCommentsField ] })
+      assert.deepEqual(reopened.field(documentCommentsField)[0].anchor, expected)
+    })
+  }
+
+  for (const suffix of [ '', ' and more text.' ]) {
+    it(`keeps the note without highlighting extra paragraphs when the quote is replaced (suffix length ${suffix.length})`, () => {
+      const quote = 'selected text'
+      const prose = 'Before ' + quote + suffix
+      const from = 'Before '.length
+      const to = from + quote.length
+      const source = prose + '\n\n' + encodeAnnotation(Text.of([ prose ]), from, to, 'Note')
+      const state = EditorState.create({ doc: source, extensions: [ markdown(), documentCommentsField ] })
+        .update({ changes: { from, to, insert: 'Rewritten text\n\nA new paragraph.' } }).state
+      const [ comment ] = state.field(documentCommentsField)
+      assert.equal(comment.text, 'Note')
+      assert.equal(comment.anchor, undefined)
+    })
+  }
+
 })
 
 function decoratedRanges (state: EditorState): Array<[number, number]> {
