@@ -245,7 +245,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cds/core@npm:^6.17.0":
+"@cds/core@npm:6.17.0":
   version: 6.17.0
   resolution: "@cds/core@npm:6.17.0"
   dependencies:
@@ -303,7 +303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/autocomplete@npm:^6.0.0, @codemirror/autocomplete@npm:^6.20.4, @codemirror/autocomplete@npm:^6.3.2, @codemirror/autocomplete@npm:^6.7.1":
+"@codemirror/autocomplete@npm:6.20.4, @codemirror/autocomplete@npm:^6.0.0, @codemirror/autocomplete@npm:^6.3.2, @codemirror/autocomplete@npm:^6.7.1":
   version: 6.20.4
   resolution: "@codemirror/autocomplete@npm:6.20.4"
   dependencies:
@@ -315,7 +315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/collab@npm:^6.1.1":
+"@codemirror/collab@npm:6.1.1":
   version: 6.1.1
   resolution: "@codemirror/collab@npm:6.1.1"
   dependencies:
@@ -324,7 +324,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/commands@npm:^6.11.1":
+"@codemirror/commands@npm:6.11.1":
   version: 6.11.1
   resolution: "@codemirror/commands@npm:6.11.1"
   dependencies:
@@ -336,7 +336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-angular@npm:^0.1.4":
+"@codemirror/lang-angular@npm:0.1.4":
   version: 0.1.4
   resolution: "@codemirror/lang-angular@npm:0.1.4"
   dependencies:
@@ -350,7 +350,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-cpp@npm:^6.0.3":
+"@codemirror/lang-cpp@npm:6.0.3":
   version: 6.0.3
   resolution: "@codemirror/lang-cpp@npm:6.0.3"
   dependencies:
@@ -360,7 +360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-css@npm:^6.0.0, @codemirror/lang-css@npm:^6.2.0, @codemirror/lang-css@npm:^6.3.1":
+"@codemirror/lang-css@npm:6.3.1, @codemirror/lang-css@npm:^6.0.0, @codemirror/lang-css@npm:^6.2.0":
   version: 6.3.1
   resolution: "@codemirror/lang-css@npm:6.3.1"
   dependencies:
@@ -373,7 +373,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-go@npm:^6.0.1":
+"@codemirror/lang-go@npm:6.0.1":
   version: 6.0.1
   resolution: "@codemirror/lang-go@npm:6.0.1"
   dependencies:
@@ -386,7 +386,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-html@npm:^6.0.0, @codemirror/lang-html@npm:^6.4.12":
+"@codemirror/lang-html@npm:6.4.12, @codemirror/lang-html@npm:^6.0.0":
   version: 6.4.12
   resolution: "@codemirror/lang-html@npm:6.4.12"
   dependencies:
@@ -403,7 +403,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-java@npm:^6.0.2":
+"@codemirror/lang-java@npm:6.0.2":
   version: 6.0.2
   resolution: "@codemirror/lang-java@npm:6.0.2"
   dependencies:
@@ -413,7 +413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-javascript@npm:^6.0.0, @codemirror/lang-javascript@npm:^6.1.2, @codemirror/lang-javascript@npm:^6.2.5":
+"@codemirror/lang-javascript@npm:6.2.5, @codemirror/lang-javascript@npm:^6.0.0, @codemirror/lang-javascript@npm:^6.1.2":
   version: 6.2.5
   resolution: "@codemirror/lang-javascript@npm:6.2.5"
   dependencies:
@@ -428,7 +428,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-jinja@npm:^6.0.1":
+"@codemirror/lang-jinja@npm:6.0.1":
   version: 6.0.1
   resolution: "@codemirror/lang-jinja@npm:6.0.1"
   dependencies:
@@ -444,7 +444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-json@npm:^6.0.2":
+"@codemirror/lang-json@npm:6.0.2":
   version: 6.0.2
   resolution: "@codemirror/lang-json@npm:6.0.2"
   dependencies:
@@ -454,7 +454,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-less@npm:^6.0.2":
+"@codemirror/lang-less@npm:6.0.2":
   version: 6.0.2
   resolution: "@codemirror/lang-less@npm:6.0.2"
   dependencies:
@@ -467,7 +467,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-lezer@npm:^6.0.2":
+"@codemirror/lang-lezer@npm:6.0.2":
   version: 6.0.2
   resolution: "@codemirror/lang-lezer@npm:6.0.2"
   dependencies:
@@ -479,7 +479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-liquid@npm:^6.3.3":
+"@codemirror/lang-liquid@npm:6.3.3":
   version: 6.3.3
   resolution: "@codemirror/lang-liquid@npm:6.3.3"
   dependencies:
@@ -495,7 +495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-markdown@npm:^6.5.2":
+"@codemirror/lang-markdown@npm:6.5.2":
   version: 6.5.2
   resolution: "@codemirror/lang-markdown@npm:6.5.2"
   dependencies:
@@ -510,7 +510,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-php@npm:^6.0.2":
+"@codemirror/lang-php@npm:6.0.2":
   version: 6.0.2
   resolution: "@codemirror/lang-php@npm:6.0.2"
   dependencies:
@@ -523,7 +523,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-python@npm:^6.2.1":
+"@codemirror/lang-python@npm:6.2.1":
   version: 6.2.1
   resolution: "@codemirror/lang-python@npm:6.2.1"
   dependencies:
@@ -536,7 +536,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-rust@npm:^6.0.2":
+"@codemirror/lang-rust@npm:6.0.2":
   version: 6.0.2
   resolution: "@codemirror/lang-rust@npm:6.0.2"
   dependencies:
@@ -546,7 +546,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-sass@npm:^6.0.2":
+"@codemirror/lang-sass@npm:6.0.2":
   version: 6.0.2
   resolution: "@codemirror/lang-sass@npm:6.0.2"
   dependencies:
@@ -559,7 +559,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-sql@npm:^6.10.0":
+"@codemirror/lang-sql@npm:6.10.0":
   version: 6.10.0
   resolution: "@codemirror/lang-sql@npm:6.10.0"
   dependencies:
@@ -573,7 +573,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-vue@npm:^0.1.3":
+"@codemirror/lang-vue@npm:0.1.3":
   version: 0.1.3
   resolution: "@codemirror/lang-vue@npm:0.1.3"
   dependencies:
@@ -587,7 +587,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-wast@npm:^6.0.2":
+"@codemirror/lang-wast@npm:6.0.2":
   version: 6.0.2
   resolution: "@codemirror/lang-wast@npm:6.0.2"
   dependencies:
@@ -599,7 +599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-xml@npm:^6.1.0":
+"@codemirror/lang-xml@npm:6.1.0":
   version: 6.1.0
   resolution: "@codemirror/lang-xml@npm:6.1.0"
   dependencies:
@@ -613,7 +613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lang-yaml@npm:^6.1.3":
+"@codemirror/lang-yaml@npm:6.1.3":
   version: 6.1.3
   resolution: "@codemirror/lang-yaml@npm:6.1.3"
   dependencies:
@@ -628,7 +628,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@npm:^6.0.0, @codemirror/language@npm:^6.10.3, @codemirror/language@npm:^6.13.1, @codemirror/language@npm:^6.3.0, @codemirror/language@npm:^6.4.0, @codemirror/language@npm:^6.6.0, @codemirror/language@npm:^6.8.0":
+"@codemirror/language@npm:6.13.1, @codemirror/language@npm:^6.0.0, @codemirror/language@npm:^6.10.3, @codemirror/language@npm:^6.3.0, @codemirror/language@npm:^6.4.0, @codemirror/language@npm:^6.6.0, @codemirror/language@npm:^6.8.0":
   version: 6.13.1
   resolution: "@codemirror/language@npm:6.13.1"
   dependencies:
@@ -643,7 +643,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/legacy-modes@npm:^6.5.5":
+"@codemirror/legacy-modes@npm:6.5.5":
   version: 6.5.5
   resolution: "@codemirror/legacy-modes@npm:6.5.5"
   dependencies:
@@ -652,7 +652,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lint@npm:^6.0.0, @codemirror/lint@npm:^6.9.7":
+"@codemirror/lint@npm:6.9.7, @codemirror/lint@npm:^6.0.0":
   version: 6.9.7
   resolution: "@codemirror/lint@npm:6.9.7"
   dependencies:
@@ -663,7 +663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/search@npm:^6.7.2":
+"@codemirror/search@npm:6.7.2":
   version: 6.7.2
   resolution: "@codemirror/search@npm:6.7.2"
   dependencies:
@@ -674,7 +674,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/state@npm:^6.0.0, @codemirror/state@npm:^6.7.0, @codemirror/state@npm:^6.7.6":
+"@codemirror/state@npm:6.7.6, @codemirror/state@npm:^6.0.0, @codemirror/state@npm:^6.7.0":
   version: 6.7.6
   resolution: "@codemirror/state@npm:6.7.6"
   dependencies:
@@ -690,7 +690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.37.0, @codemirror/view@npm:^6.42.0, @codemirror/view@npm:^6.43.15":
+"@codemirror/view@npm:6.43.15, @codemirror/view@npm:^6.0.0, @codemirror/view@npm:^6.17.0, @codemirror/view@npm:^6.23.0, @codemirror/view@npm:^6.27.0, @codemirror/view@npm:^6.37.0, @codemirror/view@npm:^6.42.0":
   version: 6.43.15
   resolution: "@codemirror/view@npm:6.43.15"
   dependencies:
@@ -716,7 +716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron-forge/cli@npm:^8.0.1":
+"@electron-forge/cli@npm:8.0.1":
   version: 8.0.1
   resolution: "@electron-forge/cli@npm:8.0.1"
   dependencies:
@@ -782,7 +782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron-forge/maker-deb@npm:^8.0.1":
+"@electron-forge/maker-deb@npm:8.0.1":
   version: 8.0.1
   resolution: "@electron-forge/maker-deb@npm:8.0.1"
   dependencies:
@@ -796,7 +796,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron-forge/maker-rpm@npm:^8.0.1":
+"@electron-forge/maker-rpm@npm:8.0.1":
   version: 8.0.1
   resolution: "@electron-forge/maker-rpm@npm:8.0.1"
   dependencies:
@@ -810,7 +810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron-forge/maker-zip@npm:^8.0.1":
+"@electron-forge/maker-zip@npm:8.0.1":
   version: 8.0.1
   resolution: "@electron-forge/maker-zip@npm:8.0.1"
   dependencies:
@@ -844,7 +844,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron-forge/plugin-fuses@npm:^8.0.1":
+"@electron-forge/plugin-fuses@npm:8.0.1":
   version: 8.0.1
   resolution: "@electron-forge/plugin-fuses@npm:8.0.1"
   dependencies:
@@ -856,7 +856,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron-forge/plugin-webpack@npm:^8.0.1":
+"@electron-forge/plugin-webpack@npm:8.0.1":
   version: 8.0.1
   resolution: "@electron-forge/plugin-webpack@npm:8.0.1"
   dependencies:
@@ -940,6 +940,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@electron/fuses@npm:2.1.3":
+  version: 2.1.3
+  resolution: "@electron/fuses@npm:2.1.3"
+  bin:
+    electron-fuses: dist/bin.js
+  checksum: 10/4c0f36866e5786c4bcdc873e3cdb3ac61a7fdc1f38374fad5b65fc848fec4ba734cd3ff79d38dab9ec35303d2d24613a2c0e612857bf75de7ccca700a834e03a
+  languageName: node
+  linkType: hard
+
 "@electron/fuses@npm:^1.8.0":
   version: 1.8.0
   resolution: "@electron/fuses@npm:1.8.0"
@@ -950,15 +959,6 @@ __metadata:
   bin:
     electron-fuses: dist/bin.js
   checksum: 10/fcd6cc79c0d909ca782ba87f060b9bf2af00c72b5b7c96cac12d41b8409518af4d52e29dc84e47994cab6fc6a723761cf7d85d6dd4cf62ad20b42446a81904ea
-  languageName: node
-  linkType: hard
-
-"@electron/fuses@npm:^2.1.3":
-  version: 2.1.3
-  resolution: "@electron/fuses@npm:2.1.3"
-  bin:
-    electron-fuses: dist/bin.js
-  checksum: 10/4c0f36866e5786c4bcdc873e3cdb3ac61a7fdc1f38374fad5b65fc848fec4ba734cd3ff79d38dab9ec35303d2d24613a2c0e612857bf75de7ccca700a834e03a
   languageName: node
   linkType: hard
 
@@ -1010,7 +1010,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron/notarize@npm:^3.1.0, @electron/notarize@npm:^3.1.2":
+"@electron/notarize@npm:3.1.2, @electron/notarize@npm:^3.1.0":
   version: 3.1.2
   resolution: "@electron/notarize@npm:3.1.2"
   dependencies:
@@ -1364,7 +1364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/config-inspector@npm:^3.5.0":
+"@eslint/config-inspector@npm:3.5.0":
   version: 3.5.0
   resolution: "@eslint/config-inspector@npm:3.5.0"
   dependencies:
@@ -1517,7 +1517,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jellybrick/dbus-next@npm:^0.11.4":
+"@jellybrick/dbus-next@npm:0.11.4":
   version: 0.11.4
   resolution: "@jellybrick/dbus-next@npm:0.11.4"
   dependencies:
@@ -1848,7 +1848,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lezer/common@npm:^1.0.0, @lezer/common@npm:^1.0.2, @lezer/common@npm:^1.1.0, @lezer/common@npm:^1.2.0, @lezer/common@npm:^1.2.1, @lezer/common@npm:^1.3.0, @lezer/common@npm:^1.5.0, @lezer/common@npm:^1.5.5":
+"@lezer/common@npm:1.5.5, @lezer/common@npm:^1.0.0, @lezer/common@npm:^1.0.2, @lezer/common@npm:^1.1.0, @lezer/common@npm:^1.2.0, @lezer/common@npm:^1.2.1, @lezer/common@npm:^1.3.0, @lezer/common@npm:^1.5.0":
   version: 1.5.5
   resolution: "@lezer/common@npm:1.5.5"
   checksum: 10/b20f2ec34e729780821c4beec726ee0556a434702773e714cba77a0efc5d6c1c1fb7eb90c3d0a38514e679556a117a21bae855cd4e7f204eeeb0ed4e0d0caf97
@@ -1888,7 +1888,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lezer/highlight@npm:^1.0.0, @lezer/highlight@npm:^1.1.3, @lezer/highlight@npm:^1.2.0, @lezer/highlight@npm:^1.2.5":
+"@lezer/highlight@npm:1.2.5, @lezer/highlight@npm:^1.0.0, @lezer/highlight@npm:^1.1.3, @lezer/highlight@npm:^1.2.0":
   version: 1.2.5
   resolution: "@lezer/highlight@npm:1.2.5"
   dependencies:
@@ -1951,7 +1951,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lezer/lr@npm:^1.0.0, @lezer/lr@npm:^1.1.0, @lezer/lr@npm:^1.3.0, @lezer/lr@npm:^1.3.1, @lezer/lr@npm:^1.3.3, @lezer/lr@npm:^1.4.0, @lezer/lr@npm:^1.4.12, @lezer/lr@npm:^1.4.2":
+"@lezer/lr@npm:1.4.12, @lezer/lr@npm:^1.0.0, @lezer/lr@npm:^1.1.0, @lezer/lr@npm:^1.3.0, @lezer/lr@npm:^1.3.1, @lezer/lr@npm:^1.3.3, @lezer/lr@npm:^1.4.0, @lezer/lr@npm:^1.4.2":
   version: 1.4.12
   resolution: "@lezer/lr@npm:1.4.12"
   dependencies:
@@ -1960,7 +1960,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lezer/markdown@npm:^1.0.0, @lezer/markdown@npm:^1.8.1":
+"@lezer/markdown@npm:1.8.1, @lezer/markdown@npm:^1.0.0":
   version: 1.8.1
   resolution: "@lezer/markdown@npm:1.8.1"
   dependencies:
@@ -2329,7 +2329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@replit/codemirror-emacs@npm:^6.1.0":
+"@replit/codemirror-emacs@npm:6.1.0":
   version: 6.1.0
   resolution: "@replit/codemirror-emacs@npm:6.1.0"
   peerDependencies:
@@ -2342,7 +2342,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@replit/codemirror-lang-nix@npm:^6.0.1":
+"@replit/codemirror-lang-nix@npm:6.0.1":
   version: 6.0.1
   resolution: "@replit/codemirror-lang-nix@npm:6.0.1"
   peerDependencies:
@@ -2364,7 +2364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@replit/codemirror-vim@npm:^6.4.0":
+"@replit/codemirror-vim@npm:6.4.0":
   version: 6.4.0
   resolution: "@replit/codemirror-vim@npm:6.4.0"
   dependencies:
@@ -2393,7 +2393,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stylistic/eslint-plugin@npm:^5.10.0":
+"@stylistic/eslint-plugin@npm:5.10.0":
   version: 5.10.0
   resolution: "@stylistic/eslint-plugin@npm:5.10.0"
   dependencies:
@@ -2418,7 +2418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/archiver@npm:^8.0.0":
+"@types/archiver@npm:8.0.0":
   version: 8.0.0
   resolution: "@types/archiver@npm:8.0.0"
   dependencies:
@@ -2712,7 +2712,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/d3@npm:^7.4.3":
+"@types/d3@npm:7.4.3, @types/d3@npm:^7.4.3":
   version: 7.4.3
   resolution: "@types/d3@npm:7.4.3"
   dependencies:
@@ -2845,7 +2845,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/gettext-parser@npm:^9.0.0":
+"@types/gettext-parser@npm:9.0.0":
   version: 9.0.0
   resolution: "@types/gettext-parser@npm:9.0.0"
   dependencies:
@@ -2907,7 +2907,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/katex@npm:^0.16.0, @types/katex@npm:^0.16.8":
+"@types/katex@npm:0.16.8, @types/katex@npm:^0.16.0":
   version: 0.16.8
   resolution: "@types/katex@npm:0.16.8"
   checksum: 10/4bf5d83d2430bc04c183765c5916c21180a75cb0181172a0aac7350943507679ceb79bfd13e394cf7c101b7417564d14c0c660baa93b16f2f42baef22a99435c
@@ -2930,7 +2930,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/luxon@npm:^3.7.6":
+"@types/luxon@npm:3.7.6":
   version: 3.7.6
   resolution: "@types/luxon@npm:3.7.6"
   checksum: 10/2bc7a58b2cf231455085314821fe9b05a8e97cef2447d8da50be0a8794f0ddfa6d4bbd18eb6259ee881be0da0d08843ce66830a30d5926a25981f91bd5f588a9
@@ -2953,7 +2953,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^10.0.10":
+"@types/mocha@npm:10.0.10":
   version: 10.0.10
   resolution: "@types/mocha@npm:10.0.10"
   checksum: 10/4e3b61ed5112add86891a5dd3ebdd087714f5e1784a63d47a96424c0825058fd07074e85e43573462f751636c92808fc18a5f3862fe45e649ea98fdc5a3ee2ea
@@ -2976,7 +2976,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.19.2, @types/node@npm:^24.9.0":
+"@types/node@npm:24.19.2, @types/node@npm:^24.9.0":
   version: 24.19.2
   resolution: "@types/node@npm:24.19.2"
   dependencies:
@@ -3024,7 +3024,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.8.0":
+"@types/semver@npm:7.8.0":
   version: 7.8.0
   resolution: "@types/semver@npm:7.8.0"
   checksum: 10/bbb33a88cdbc72759cf6b2750f1a28468f4470a61a1543061f494c21a53ad53bb85976e5282d79c811579e7073db0ecb6643ee0bcbf0466e8b5b3cb57ea97de0
@@ -3096,7 +3096,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/underscore@npm:^1.13.0":
+"@types/underscore@npm:1.13.0":
   version: 1.13.0
   resolution: "@types/underscore@npm:1.13.0"
   checksum: 10/938a6a0a878ce108046601a7cceeec9870428cc565a0c6d7891b7ad39e7570f1f75a1c02bf81baf23c7c7948ef0693d00ccd1a8e05894a52fed4c584a4b7172e
@@ -3126,7 +3126,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^8.72.1":
+"@typescript-eslint/eslint-plugin@npm:8.72.1":
   version: 8.72.1
   resolution: "@typescript-eslint/eslint-plugin@npm:8.72.1"
   dependencies:
@@ -3146,7 +3146,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^8.72.1":
+"@typescript-eslint/parser@npm:8.72.1":
   version: 8.72.1
   resolution: "@typescript-eslint/parser@npm:8.72.1"
   dependencies:
@@ -3392,7 +3392,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/devtools-api@npm:^8.2.1":
+"@vue/devtools-api@npm:8.2.1":
   version: 8.2.1
   resolution: "@vue/devtools-api@npm:8.2.1"
   dependencies:
@@ -3707,7 +3707,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"adm-zip@npm:^0.6.1":
+"adm-zip@npm:0.6.1":
   version: 0.6.1
   resolution: "adm-zip@npm:0.6.1"
   checksum: 10/072af04891b33a68aba6b6979d6eec56cbe8d5bca9a349c2e78f86cc64e872e75faf56341e20541c6ffd7bcfb931187157c24f141b97ad1f18ebd8bfacbcf437
@@ -3927,7 +3927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"archiver@npm:^8.0.0":
+"archiver@npm:8.0.0":
   version: 8.0.0
   resolution: "archiver@npm:8.0.0"
   dependencies:
@@ -4122,7 +4122,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astrocite@npm:^0.16.4":
+"astrocite@npm:0.16.4":
   version: 0.16.4
   resolution: "astrocite@npm:0.16.4"
   dependencies:
@@ -4345,7 +4345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bcp-47@npm:^2.1.2":
+"bcp-47@npm:2.1.2, bcp-47@npm:^2.1.2":
   version: 2.1.2
   resolution: "bcp-47@npm:2.1.2"
   dependencies:
@@ -4356,7 +4356,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bibliojson@npm:^4.1.0":
+"bibliojson@npm:4.1.0":
   version: 4.1.0
   resolution: "bibliojson@npm:4.1.0"
   dependencies:
@@ -4692,6 +4692,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chalk@npm:6.0.1":
+  version: 6.0.1
+  resolution: "chalk@npm:6.0.1"
+  checksum: 10/1457692e6327f299da7d7cd6a7774fe1de25bda6c0e33791901d6762a6c0f2409bd3d92bf7695519825c2fbb405c104a0a73fd489e4e9f88af3ef2a1d97455c9
+  languageName: node
+  linkType: hard
+
 "chalk@npm:^4.1.0, chalk@npm:^4.1.1, chalk@npm:^4.1.2":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
@@ -4706,13 +4713,6 @@ __metadata:
   version: 5.6.2
   resolution: "chalk@npm:5.6.2"
   checksum: 10/1b2f48f6fba1370670d5610f9cd54c391d6ede28f4b7062dd38244ea5768777af72e5be6b74fb6c6d54cb84c4a2dff3f3afa9b7cb5948f7f022cfd3d087989e0
-  languageName: node
-  linkType: hard
-
-"chalk@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "chalk@npm:6.0.1"
-  checksum: 10/1457692e6327f299da7d7cd6a7774fe1de25bda6c0e33791901d6762a6c0f2409bd3d92bf7695519825c2fbb405c104a0a73fd489e4e9f88af3ef2a1d97455c9
   languageName: node
   linkType: hard
 
@@ -4757,6 +4757,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chokidar@npm:6.0.0":
+  version: 6.0.0
+  resolution: "chokidar@npm:6.0.0"
+  dependencies:
+    readdirp: "npm:^5.1.1"
+  checksum: 10/ad213ded0ed673072ea3d7a48e9b2133aeb74a1ecde59c4fed7a3793078c5beb4763842d836979ba24ff34e5bd8a1b6bbdf73be45aef39ed559478299d87dd92
+  languageName: node
+  linkType: hard
+
 "chokidar@npm:^3.6.0":
   version: 3.6.0
   resolution: "chokidar@npm:3.6.0"
@@ -4782,15 +4791,6 @@ __metadata:
   dependencies:
     readdirp: "npm:^5.0.0"
   checksum: 10/a1c2a4ee6ee81ba6409712c295a47be055fb9de1186dfbab33c1e82f28619de962ba02fc5f9d433daaedc96c35747460d8b2079ac2907de2c95e3f7cce913113
-  languageName: node
-  linkType: hard
-
-"chokidar@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "chokidar@npm:6.0.0"
-  dependencies:
-    readdirp: "npm:^5.1.1"
-  checksum: 10/ad213ded0ed673072ea3d7a48e9b2133aeb74a1ecde59c4fed7a3793078c5beb4763842d836979ba24ff34e5bd8a1b6bbdf73be45aef39ed559478299d87dd92
   languageName: node
   linkType: hard
 
@@ -4829,7 +4829,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"citeproc@npm:^2.4.63":
+"citeproc@npm:2.4.63":
   version: 2.4.63
   resolution: "citeproc@npm:2.4.63"
   checksum: 10/719d7a1d2aa8c12583270ed9663180d53dfd4f51259644732547f5bb38f9c451183c080d126967e78771fc5eb86b03eece497012baba87102da20d128be87f2d
@@ -4949,7 +4949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-lang-elixir@npm:^4.0.1":
+"codemirror-lang-elixir@npm:4.0.1":
   version: 4.0.1
   resolution: "codemirror-lang-elixir@npm:4.0.1"
   dependencies:
@@ -4959,7 +4959,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-lang-hcl@npm:^0.2.0":
+"codemirror-lang-hcl@npm:0.2.0":
   version: 0.2.0
   resolution: "codemirror-lang-hcl@npm:0.2.0"
   dependencies:
@@ -5177,7 +5177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-webpack-plugin@npm:^14.0.0":
+"copy-webpack-plugin@npm:14.0.0":
   version: 14.0.0
   resolution: "copy-webpack-plugin@npm:14.0.0"
   dependencies:
@@ -5250,7 +5250,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-env@npm:^10.1.0":
+"cross-env@npm:10.1.0":
   version: 10.1.0
   resolution: "cross-env@npm:10.1.0"
   dependencies:
@@ -5300,7 +5300,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-loader@npm:^7.1.5":
+"css-loader@npm:7.1.5":
   version: 7.1.5
   resolution: "css-loader@npm:7.1.5"
   dependencies:
@@ -5705,7 +5705,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3@npm:^7.9.0, d3@npm:^7.9.2":
+"d3@npm:7.9.2, d3@npm:^7.9.0":
   version: 7.9.2
   resolution: "d3@npm:7.9.2"
   dependencies:
@@ -6106,7 +6106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^3.4.17":
+"dompurify@npm:3.4.17, dompurify@npm:^3.4.17":
   version: 3.4.17
   resolution: "dompurify@npm:3.4.17"
   dependencies:
@@ -6193,7 +6193,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-builder@npm:^26.18.1":
+"electron-builder@npm:26.18.1":
   version: 26.18.1
   resolution: "electron-builder@npm:26.18.1"
   dependencies:
@@ -6214,7 +6214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-devtools-installer@npm:^4.0.0":
+"electron-devtools-installer@npm:4.0.0":
   version: 4.0.0
   resolution: "electron-devtools-installer@npm:4.0.0"
   dependencies:
@@ -6300,7 +6300,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:^44.10.2":
+"electron@npm:44.10.2":
   version: 44.10.2
   resolution: "electron@npm:44.10.2"
   dependencies:
@@ -6764,7 +6764,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.32.0":
+"eslint-plugin-import@npm:2.32.0":
   version: 2.32.0
   resolution: "eslint-plugin-import@npm:2.32.0"
   dependencies:
@@ -6793,7 +6793,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-n@npm:^18.5.0":
+"eslint-plugin-n@npm:18.5.0":
   version: 18.5.0
   resolution: "eslint-plugin-n@npm:18.5.0"
   dependencies:
@@ -6819,7 +6819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-promise@npm:^7.3.0":
+"eslint-plugin-promise@npm:7.3.0":
   version: 7.3.0
   resolution: "eslint-plugin-promise@npm:7.3.0"
   dependencies:
@@ -6830,7 +6830,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-vue@npm:^10.12.0":
+"eslint-plugin-vue@npm:10.12.0":
   version: 10.12.0
   resolution: "eslint-plugin-vue@npm:10.12.0"
   dependencies:
@@ -6887,7 +6887,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^10.14.0":
+"eslint@npm:10.14.0":
   version: 10.14.0
   resolution: "eslint@npm:10.14.0"
   dependencies:
@@ -7313,7 +7313,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fix-path@npm:^5.0.0":
+"fix-path@npm:5.0.0":
   version: 5.0.0
   resolution: "fix-path@npm:5.0.0"
   dependencies:
@@ -7562,7 +7562,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gemoji@npm:^8.1.0":
+"gemoji@npm:8.1.0":
   version: 8.1.0
   resolution: "gemoji@npm:8.1.0"
   checksum: 10/42d8616dfdfc91d06a051a356e74083c62f628e518dbb2611d88d3edcce9ab422b0254f1e6fe37b78c7ddec4bceb71a39f63f93c6fc9bd6cdab57801f6d33e07
@@ -7671,7 +7671,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gettext-parser@npm:^10.0.0":
+"gettext-parser@npm:10.0.0":
   version: 10.0.0
   resolution: "gettext-parser@npm:10.0.0"
   dependencies:
@@ -9189,7 +9189,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsdom@npm:^31.0.0":
+"jsdom@npm:31.0.0":
   version: 31.0.0
   resolution: "jsdom@npm:31.0.0"
   dependencies:
@@ -9328,7 +9328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"katex@npm:^0.16.21":
+"katex@npm:0.16.47":
   version: 0.16.47
   resolution: "katex@npm:0.16.47"
   dependencies:
@@ -9371,14 +9371,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ky@npm:^2.2.0":
+"ky@npm:2.2.0":
   version: 2.2.0
   resolution: "ky@npm:2.2.0"
   checksum: 10/bf4c40d66af5727cb38e7c4b754694d89bd3589dbc005e42a29e5a24a1f3ae436dea743061711bfc16efd11b3116d4523ffe6398d165b7e096d5625eb75a69a3
   languageName: node
   linkType: hard
 
-"lang-criticmarkup@npm:^0.3.0":
+"lang-criticmarkup@npm:0.3.0":
   version: 0.3.0
   resolution: "lang-criticmarkup@npm:0.3.0"
   dependencies:
@@ -9428,7 +9428,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"less-loader@npm:^13.1.0":
+"less-loader@npm:13.1.0":
   version: 13.1.0
   resolution: "less-loader@npm:13.1.0"
   dependencies:
@@ -9446,7 +9446,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"less@npm:^4.9.1":
+"less@npm:4.9.1":
   version: 4.9.1
   resolution: "less@npm:4.9.1"
   dependencies:
@@ -9670,7 +9670,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^3.7.2":
+"luxon@npm:3.7.2":
   version: 3.7.2
   resolution: "luxon@npm:3.7.2"
   checksum: 10/b24cd205ed306ce7415991687897dcc4027921ae413c9116590bc33a95f93b86ce52cf74ba72b4f5c5ab1c10090517f54ac8edfb127c049e0bf55b90dc2260be
@@ -10078,7 +10078,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mermaid@npm:^12.3.0":
+"mermaid@npm:12.3.0":
   version: 12.3.0
   resolution: "mermaid@npm:12.3.0"
   dependencies:
@@ -10703,7 +10703,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mocha@npm:^12.0.3":
+"mocha@npm:12.0.3":
   version: 12.0.3
   resolution: "mocha@npm:12.0.3"
   dependencies:
@@ -10834,7 +10834,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-abi@npm:^3.74.0":
+"node-abi@npm:3.101.0":
   version: 3.101.0
   resolution: "node-abi@npm:3.101.0"
   dependencies:
@@ -10873,7 +10873,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:^12.1.0":
+"node-gyp@npm:12.4.0":
   version: 12.4.0
   resolution: "node-gyp@npm:12.4.0"
   dependencies:
@@ -10900,7 +10900,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-loader@npm:^2.1.0":
+"node-loader@npm:2.1.0":
   version: 2.1.0
   resolution: "node-loader@npm:2.1.0"
   dependencies:
@@ -10927,7 +10927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodehun@npm:^3.0.2":
+"nodehun@npm:3.0.2":
   version: 3.0.2
   resolution: "nodehun@npm:3.0.2"
   dependencies:
@@ -10987,7 +10987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nyc@npm:^18.0.0":
+"nyc@npm:18.0.0":
   version: 18.0.0
   resolution: "nyc@npm:18.0.0"
   dependencies:
@@ -11498,7 +11498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pinia@npm:^4.1.0":
+"pinia@npm:4.1.0":
   version: 4.1.0
   resolution: "pinia@npm:4.1.0"
   dependencies:
@@ -12023,7 +12023,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rehype-parse@npm:^9.0.1":
+"rehype-parse@npm:9.0.1":
   version: 9.0.1
   resolution: "rehype-parse@npm:9.0.1"
   dependencies:
@@ -12034,7 +12034,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rehype-remark@npm:^10.0.1":
+"rehype-remark@npm:10.0.1":
   version: 10.0.1
   resolution: "rehype-remark@npm:10.0.1"
   dependencies:
@@ -12047,7 +12047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rehype-remove-comments@npm:^6.1.1":
+"rehype-remove-comments@npm:6.1.1":
   version: 6.1.1
   resolution: "rehype-remove-comments@npm:6.1.1"
   dependencies:
@@ -12074,7 +12074,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-frontmatter@npm:^5.0.0":
+"remark-frontmatter@npm:5.0.0":
   version: 5.0.0
   resolution: "remark-frontmatter@npm:5.0.0"
   dependencies:
@@ -12086,7 +12086,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-gfm@npm:^4.0.1":
+"remark-gfm@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-gfm@npm:4.0.1"
   dependencies:
@@ -12100,7 +12100,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-blockquote-indentation@npm:^4.0.1":
+"remark-lint-blockquote-indentation@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-blockquote-indentation@npm:4.0.1"
   dependencies:
@@ -12114,7 +12114,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-checkbox-character-style@npm:^5.0.1":
+"remark-lint-checkbox-character-style@npm:5.0.1":
   version: 5.0.1
   resolution: "remark-lint-checkbox-character-style@npm:5.0.1"
   dependencies:
@@ -12128,7 +12128,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-code-block-style@npm:^4.0.1":
+"remark-lint-code-block-style@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-code-block-style@npm:4.0.1"
   dependencies:
@@ -12142,7 +12142,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-emphasis-marker@npm:^4.0.1":
+"remark-lint-emphasis-marker@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-emphasis-marker@npm:4.0.1"
   dependencies:
@@ -12155,7 +12155,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-fenced-code-marker@npm:^4.0.1":
+"remark-lint-fenced-code-marker@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-fenced-code-marker@npm:4.0.1"
   dependencies:
@@ -12169,7 +12169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-hard-break-spaces@npm:^4.1.1":
+"remark-lint-hard-break-spaces@npm:4.1.1":
   version: 4.1.1
   resolution: "remark-lint-hard-break-spaces@npm:4.1.1"
   dependencies:
@@ -12181,7 +12181,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-heading-style@npm:^4.0.1":
+"remark-lint-heading-style@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-heading-style@npm:4.0.1"
   dependencies:
@@ -12196,7 +12196,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-link-title-style@npm:^4.0.1":
+"remark-lint-link-title-style@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-link-title-style@npm:4.0.1"
   dependencies:
@@ -12209,7 +12209,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-list-item-bullet-indent@npm:^5.0.1":
+"remark-lint-list-item-bullet-indent@npm:5.0.1":
   version: 5.0.1
   resolution: "remark-lint-list-item-bullet-indent@npm:5.0.1"
   dependencies:
@@ -12221,7 +12221,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-list-item-indent@npm:^4.0.1":
+"remark-lint-list-item-indent@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-list-item-indent@npm:4.0.1"
   dependencies:
@@ -12235,7 +12235,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-no-blockquote-without-marker@npm:^6.0.1":
+"remark-lint-no-blockquote-without-marker@npm:6.0.1":
   version: 6.0.1
   resolution: "remark-lint-no-blockquote-without-marker@npm:6.0.1"
   dependencies:
@@ -12252,7 +12252,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-no-consecutive-blank-lines@npm:^5.0.1":
+"remark-lint-no-consecutive-blank-lines@npm:5.0.1":
   version: 5.0.1
   resolution: "remark-lint-no-consecutive-blank-lines@npm:5.0.1"
   dependencies:
@@ -12268,7 +12268,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-no-duplicate-definitions@npm:^4.0.1":
+"remark-lint-no-duplicate-definitions@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-no-duplicate-definitions@npm:4.0.1"
   dependencies:
@@ -12282,7 +12282,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-no-heading-content-indent@npm:^5.0.1":
+"remark-lint-no-heading-content-indent@npm:5.0.1":
   version: 5.0.1
   resolution: "remark-lint-no-heading-content-indent@npm:5.0.1"
   dependencies:
@@ -12296,7 +12296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-no-shortcut-reference-image@npm:^4.0.1":
+"remark-lint-no-shortcut-reference-image@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-no-shortcut-reference-image@npm:4.0.1"
   dependencies:
@@ -12307,7 +12307,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-no-shortcut-reference-link@npm:^4.0.1":
+"remark-lint-no-shortcut-reference-link@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-no-shortcut-reference-link@npm:4.0.1"
   dependencies:
@@ -12318,7 +12318,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-no-unused-definitions@npm:^4.0.2":
+"remark-lint-no-unused-definitions@npm:4.0.2":
   version: 4.0.2
   resolution: "remark-lint-no-unused-definitions@npm:4.0.2"
   dependencies:
@@ -12330,7 +12330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-ordered-list-marker-style@npm:^4.0.1":
+"remark-lint-ordered-list-marker-style@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-ordered-list-marker-style@npm:4.0.1"
   dependencies:
@@ -12345,7 +12345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-rule-style@npm:^4.0.1":
+"remark-lint-rule-style@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-rule-style@npm:4.0.1"
   dependencies:
@@ -12359,7 +12359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-strong-marker@npm:^4.0.1":
+"remark-lint-strong-marker@npm:4.0.1":
   version: 4.0.1
   resolution: "remark-lint-strong-marker@npm:4.0.1"
   dependencies:
@@ -12372,7 +12372,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint-table-cell-padding@npm:^5.1.1":
+"remark-lint-table-cell-padding@npm:5.1.1":
   version: 5.1.1
   resolution: "remark-lint-table-cell-padding@npm:5.1.1"
   dependencies:
@@ -12389,7 +12389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-lint@npm:^10.0.1":
+"remark-lint@npm:10.0.1":
   version: 10.0.1
   resolution: "remark-lint@npm:10.0.1"
   dependencies:
@@ -12400,7 +12400,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-math@npm:^6.0.0":
+"remark-math@npm:6.0.0":
   version: 6.0.0
   resolution: "remark-math@npm:6.0.0"
   dependencies:
@@ -12436,7 +12436,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark-stringify@npm:^11.0.0":
+"remark-stringify@npm:11.0.0, remark-stringify@npm:^11.0.0":
   version: 11.0.0
   resolution: "remark-stringify@npm:11.0.0"
   dependencies:
@@ -12447,7 +12447,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"remark@npm:^15.0.1":
+"remark@npm:15.0.1":
   version: 15.0.1
   resolution: "remark@npm:15.0.1"
   dependencies:
@@ -12763,21 +12763,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sanitize-filename@npm:1.6.5":
+  version: 1.6.5
+  resolution: "sanitize-filename@npm:1.6.5"
+  dependencies:
+    truncate-utf8-bytes: "npm:^1.0.0"
+  checksum: 10/9e6724419dae707135ea37a957bb658228d6e8fa8f2e048abc9a6960880d1d6612ba938239c12d6a539c8fa072d1fdf82f6413cdb8c29786c22b2df09e799d06
+  languageName: node
+  linkType: hard
+
 "sanitize-filename@npm:^1.6.3":
   version: 1.6.4
   resolution: "sanitize-filename@npm:1.6.4"
   dependencies:
     truncate-utf8-bytes: "npm:^1.0.0"
   checksum: 10/9fb32f8ae51b1931eb4f780ac140f3fa9ccbfd8c746231d426cd5f0bc95608557e6e2540186bab81a702b98cd301b622f4a80d3263d82680bebca90a38158b38
-  languageName: node
-  linkType: hard
-
-"sanitize-filename@npm:^1.6.5":
-  version: 1.6.5
-  resolution: "sanitize-filename@npm:1.6.5"
-  dependencies:
-    truncate-utf8-bytes: "npm:^1.0.0"
-  checksum: 10/9e6724419dae707135ea37a957bb658228d6e8fa8f2e048abc9a6960880d1d6612ba938239c12d6a539c8fa072d1fdf82f6413cdb8c29786c22b2df09e799d06
   languageName: node
   linkType: hard
 
@@ -12847,6 +12847,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:7.8.6, semver@npm:^7.1.1, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.3, semver@npm:^7.7.1, semver@npm:^7.7.2, semver@npm:^7.7.3, semver@npm:^7.8.5":
+  version: 7.8.6
+  resolution: "semver@npm:7.8.6"
+  bin:
+    semver: bin/semver.js
+  checksum: 10/76fd62a781a9c58464e4d4b1b9c99c404063d8133fff8a0753e66b1bd826bfb720d843664e7ab1268c0fb7134d04df9f3b8788eb2f1000c509648e0eeac03921
+  languageName: node
+  linkType: hard
+
 "semver@npm:^5.5.0":
   version: 5.7.3
   resolution: "semver@npm:5.7.3"
@@ -12862,15 +12871,6 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 10/57f6808743a77f209a9a53bd3eac1c4e83f4be00f83798bffd3af4d383511da3a9dd06cc29a0284c944136d5d90a7a25a175e8e587c75d62b2bb57794e98f8a0
-  languageName: node
-  linkType: hard
-
-"semver@npm:^7.1.1, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.3, semver@npm:^7.7.1, semver@npm:^7.7.2, semver@npm:^7.7.3, semver@npm:^7.8.5, semver@npm:^7.8.6":
-  version: 7.8.6
-  resolution: "semver@npm:7.8.6"
-  bin:
-    semver: bin/semver.js
-  checksum: 10/76fd62a781a9c58464e4d4b1b9c99c404063d8133fff8a0753e66b1bd826bfb720d843664e7ab1268c0fb7134d04df9f3b8788eb2f1000c509648e0eeac03921
   languageName: node
   linkType: hard
 
@@ -13467,7 +13467,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"style-loader@npm:^4.0.0":
+"style-loader@npm:4.0.0":
   version: 4.0.0
   resolution: "style-loader@npm:4.0.0"
   peerDependencies:
@@ -13665,7 +13665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tippy.js@npm:^6.3.7":
+"tippy.js@npm:6.3.7":
   version: 6.3.7
   resolution: "tippy.js@npm:6.3.7"
   dependencies:
@@ -13797,7 +13797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^9.6.2":
+"ts-loader@npm:9.6.2":
   version: 9.6.2
   resolution: "ts-loader@npm:9.6.2"
   dependencies:
@@ -13841,7 +13841,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^4.23.15":
+"tsx@npm:4.23.15":
   version: 4.23.15
   resolution: "tsx@npm:4.23.15"
   dependencies:
@@ -13968,7 +13968,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.9.3":
+"typescript@npm:5.9.3":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -13978,7 +13978,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.9.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:
@@ -14000,7 +14000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"underscore@npm:^1.13.8":
+"underscore@npm:1.13.8":
   version: 1.13.8
   resolution: "underscore@npm:1.13.8"
   checksum: 10/b50ac5806d059cc180b1bd9adea6f7ed500021f4dc782dfc75d66a90337f6f0506623c1b37863f4a9bf64ffbeb5769b638a54b7f2f5966816189955815953139
@@ -14070,7 +14070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unified@npm:^11.0.0, unified@npm:^11.0.5":
+"unified@npm:11.0.5, unified@npm:^11.0.0":
   version: 11.0.5
   resolution: "unified@npm:11.0.5"
   dependencies:
@@ -14323,7 +14323,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-eslint-parser@npm:^10.4.2":
+"vue-eslint-parser@npm:10.4.2":
   version: 10.4.2
   resolution: "vue-eslint-parser@npm:10.4.2"
   dependencies:
@@ -14339,7 +14339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-loader@npm:^17.4.2":
+"vue-loader@npm:17.4.2":
   version: 17.4.2
   resolution: "vue-loader@npm:17.4.2"
   dependencies:
@@ -14357,7 +14357,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-tsc@npm:^3.3.14":
+"vue-tsc@npm:3.3.14":
   version: 3.3.14
   resolution: "vue-tsc@npm:3.3.14"
   dependencies:
@@ -14371,7 +14371,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-virtual-scroller@npm:^3.0.5":
+"vue-virtual-scroller@npm:3.0.5":
   version: 3.0.5
   resolution: "vue-virtual-scroller@npm:3.0.5"
   peerDependencies:
@@ -14380,7 +14380,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:^3.5.45":
+"vue@npm:3.5.45":
   version: 3.5.45
   resolution: "vue@npm:3.5.45"
   dependencies:
@@ -14398,7 +14398,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"w3c-keyname@npm:^2.2.4, w3c-keyname@npm:^2.2.8":
+"w3c-keyname@npm:2.2.8, w3c-keyname@npm:^2.2.4":
   version: 2.2.8
   resolution: "w3c-keyname@npm:2.2.8"
   checksum: 10/95bafa4c04fa2f685a86ca1000069c1ec43ace1f8776c10f226a73296caeddd83f893db885c2c220ebeb6c52d424e3b54d7c0c1e963bbf204038ff1a944fbb07
@@ -14541,7 +14541,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.112.2, webpack@npm:^5.69.1":
+"webpack@npm:5.112.2, webpack@npm:^5.69.1":
   version: 5.112.2
   resolution: "webpack@npm:5.112.2"
   dependencies:
@@ -14903,7 +14903,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.9.1":
+"yaml@npm:2.9.1":
   version: 2.9.1
   resolution: "yaml@npm:2.9.1"
   bin:
@@ -15002,155 +15002,155 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zettlr@workspace:."
   dependencies:
-    "@cds/core": "npm:^6.17.0"
-    "@codemirror/autocomplete": "npm:^6.20.4"
-    "@codemirror/collab": "npm:^6.1.1"
-    "@codemirror/commands": "npm:^6.11.1"
-    "@codemirror/lang-angular": "npm:^0.1.4"
-    "@codemirror/lang-cpp": "npm:^6.0.3"
-    "@codemirror/lang-css": "npm:^6.3.1"
-    "@codemirror/lang-go": "npm:^6.0.1"
-    "@codemirror/lang-html": "npm:^6.4.12"
-    "@codemirror/lang-java": "npm:^6.0.2"
-    "@codemirror/lang-javascript": "npm:^6.2.5"
-    "@codemirror/lang-jinja": "npm:^6.0.1"
-    "@codemirror/lang-json": "npm:^6.0.2"
-    "@codemirror/lang-less": "npm:^6.0.2"
-    "@codemirror/lang-lezer": "npm:^6.0.2"
-    "@codemirror/lang-liquid": "npm:^6.3.3"
-    "@codemirror/lang-markdown": "npm:^6.5.2"
-    "@codemirror/lang-php": "npm:^6.0.2"
-    "@codemirror/lang-python": "npm:^6.2.1"
-    "@codemirror/lang-rust": "npm:^6.0.2"
-    "@codemirror/lang-sass": "npm:^6.0.2"
-    "@codemirror/lang-sql": "npm:^6.10.0"
-    "@codemirror/lang-vue": "npm:^0.1.3"
-    "@codemirror/lang-wast": "npm:^6.0.2"
-    "@codemirror/lang-xml": "npm:^6.1.0"
-    "@codemirror/lang-yaml": "npm:^6.1.3"
-    "@codemirror/language": "npm:^6.13.1"
-    "@codemirror/legacy-modes": "npm:^6.5.5"
-    "@codemirror/lint": "npm:^6.9.7"
-    "@codemirror/search": "npm:^6.7.2"
-    "@codemirror/state": "npm:^6.7.6"
-    "@codemirror/view": "npm:^6.43.15"
-    "@electron-forge/cli": "npm:^8.0.1"
-    "@electron-forge/maker-deb": "npm:^8.0.1"
-    "@electron-forge/maker-rpm": "npm:^8.0.1"
-    "@electron-forge/maker-zip": "npm:^8.0.1"
-    "@electron-forge/plugin-fuses": "npm:^8.0.1"
-    "@electron-forge/plugin-webpack": "npm:^8.0.1"
-    "@electron/fuses": "npm:^2.1.3"
-    "@electron/notarize": "npm:^3.1.2"
-    "@eslint/config-inspector": "npm:^3.5.0"
-    "@jellybrick/dbus-next": "npm:^0.11.4"
-    "@lezer/common": "npm:^1.5.5"
-    "@lezer/highlight": "npm:^1.2.5"
-    "@lezer/lr": "npm:^1.4.12"
-    "@lezer/markdown": "npm:^1.8.1"
-    "@replit/codemirror-emacs": "npm:^6.1.0"
-    "@replit/codemirror-lang-nix": "npm:^6.0.1"
-    "@replit/codemirror-vim": "npm:^6.4.0"
-    "@stylistic/eslint-plugin": "npm:^5.10.0"
-    "@types/archiver": "npm:^8.0.0"
-    "@types/d3": "npm:^7.4.3"
-    "@types/gettext-parser": "npm:^9.0.0"
-    "@types/katex": "npm:^0.16.8"
-    "@types/luxon": "npm:^3.7.6"
-    "@types/mocha": "npm:^10.0.10"
-    "@types/node": "npm:^24.19.2"
-    "@types/semver": "npm:^7.8.0"
-    "@types/underscore": "npm:^1.13.0"
-    "@typescript-eslint/eslint-plugin": "npm:^8.72.1"
-    "@typescript-eslint/parser": "npm:^8.72.1"
+    "@cds/core": "npm:6.17.0"
+    "@codemirror/autocomplete": "npm:6.20.4"
+    "@codemirror/collab": "npm:6.1.1"
+    "@codemirror/commands": "npm:6.11.1"
+    "@codemirror/lang-angular": "npm:0.1.4"
+    "@codemirror/lang-cpp": "npm:6.0.3"
+    "@codemirror/lang-css": "npm:6.3.1"
+    "@codemirror/lang-go": "npm:6.0.1"
+    "@codemirror/lang-html": "npm:6.4.12"
+    "@codemirror/lang-java": "npm:6.0.2"
+    "@codemirror/lang-javascript": "npm:6.2.5"
+    "@codemirror/lang-jinja": "npm:6.0.1"
+    "@codemirror/lang-json": "npm:6.0.2"
+    "@codemirror/lang-less": "npm:6.0.2"
+    "@codemirror/lang-lezer": "npm:6.0.2"
+    "@codemirror/lang-liquid": "npm:6.3.3"
+    "@codemirror/lang-markdown": "npm:6.5.2"
+    "@codemirror/lang-php": "npm:6.0.2"
+    "@codemirror/lang-python": "npm:6.2.1"
+    "@codemirror/lang-rust": "npm:6.0.2"
+    "@codemirror/lang-sass": "npm:6.0.2"
+    "@codemirror/lang-sql": "npm:6.10.0"
+    "@codemirror/lang-vue": "npm:0.1.3"
+    "@codemirror/lang-wast": "npm:6.0.2"
+    "@codemirror/lang-xml": "npm:6.1.0"
+    "@codemirror/lang-yaml": "npm:6.1.3"
+    "@codemirror/language": "npm:6.13.1"
+    "@codemirror/legacy-modes": "npm:6.5.5"
+    "@codemirror/lint": "npm:6.9.7"
+    "@codemirror/search": "npm:6.7.2"
+    "@codemirror/state": "npm:6.7.6"
+    "@codemirror/view": "npm:6.43.15"
+    "@electron-forge/cli": "npm:8.0.1"
+    "@electron-forge/maker-deb": "npm:8.0.1"
+    "@electron-forge/maker-rpm": "npm:8.0.1"
+    "@electron-forge/maker-zip": "npm:8.0.1"
+    "@electron-forge/plugin-fuses": "npm:8.0.1"
+    "@electron-forge/plugin-webpack": "npm:8.0.1"
+    "@electron/fuses": "npm:2.1.3"
+    "@electron/notarize": "npm:3.1.2"
+    "@eslint/config-inspector": "npm:3.5.0"
+    "@jellybrick/dbus-next": "npm:0.11.4"
+    "@lezer/common": "npm:1.5.5"
+    "@lezer/highlight": "npm:1.2.5"
+    "@lezer/lr": "npm:1.4.12"
+    "@lezer/markdown": "npm:1.8.1"
+    "@replit/codemirror-emacs": "npm:6.1.0"
+    "@replit/codemirror-lang-nix": "npm:6.0.1"
+    "@replit/codemirror-vim": "npm:6.4.0"
+    "@stylistic/eslint-plugin": "npm:5.10.0"
+    "@types/archiver": "npm:8.0.0"
+    "@types/d3": "npm:7.4.3"
+    "@types/gettext-parser": "npm:9.0.0"
+    "@types/katex": "npm:0.16.8"
+    "@types/luxon": "npm:3.7.6"
+    "@types/mocha": "npm:10.0.10"
+    "@types/node": "npm:24.19.2"
+    "@types/semver": "npm:7.8.0"
+    "@types/underscore": "npm:1.13.0"
+    "@typescript-eslint/eslint-plugin": "npm:8.72.1"
+    "@typescript-eslint/parser": "npm:8.72.1"
     "@vercel/webpack-asset-relocator-loader": "npm:1.7.3"
-    "@vue/devtools-api": "npm:^8.2.1"
-    adm-zip: "npm:^0.6.1"
-    archiver: "npm:^8.0.0"
-    astrocite: "npm:^0.16.4"
-    bcp-47: "npm:^2.1.2"
-    bibliojson: "npm:^4.1.0"
-    chalk: "npm:^6.0.1"
-    chokidar: "npm:^6.0.0"
-    citeproc: "npm:^2.4.63"
-    codemirror-lang-elixir: "npm:^4.0.1"
-    codemirror-lang-hcl: "npm:^0.2.0"
-    copy-webpack-plugin: "npm:^14.0.0"
-    cross-env: "npm:^10.1.0"
-    css-loader: "npm:^7.1.5"
-    d3: "npm:^7.9.2"
-    dompurify: "npm:^3.4.17"
-    electron: "npm:^44.10.2"
-    electron-builder: "npm:^26.18.1"
-    electron-devtools-installer: "npm:^4.0.0"
-    eslint: "npm:^10.14.0"
-    eslint-plugin-import: "npm:^2.32.0"
-    eslint-plugin-n: "npm:^18.5.0"
-    eslint-plugin-promise: "npm:^7.3.0"
-    eslint-plugin-vue: "npm:^10.12.0"
-    fix-path: "npm:^5.0.0"
-    gemoji: "npm:^8.1.0"
-    gettext-parser: "npm:^10.0.0"
-    jsdom: "npm:^31.0.0"
-    katex: "npm:^0.19.1"
-    ky: "npm:^2.2.0"
-    lang-criticmarkup: "npm:^0.3.0"
-    less: "npm:^4.9.1"
-    less-loader: "npm:^13.1.0"
-    luxon: "npm:^3.7.2"
-    mermaid: "npm:^12.3.0"
-    mocha: "npm:^12.0.3"
-    node-loader: "npm:^2.1.0"
-    nodehun: "npm:^3.0.2"
-    nyc: "npm:^18.0.0"
-    pinia: "npm:^4.1.0"
-    rehype-parse: "npm:^9.0.1"
-    rehype-remark: "npm:^10.0.1"
-    rehype-remove-comments: "npm:^6.1.1"
-    remark: "npm:^15.0.1"
-    remark-frontmatter: "npm:^5.0.0"
-    remark-gfm: "npm:^4.0.1"
-    remark-lint: "npm:^10.0.1"
-    remark-lint-blockquote-indentation: "npm:^4.0.1"
-    remark-lint-checkbox-character-style: "npm:^5.0.1"
-    remark-lint-code-block-style: "npm:^4.0.1"
-    remark-lint-emphasis-marker: "npm:^4.0.1"
-    remark-lint-fenced-code-marker: "npm:^4.0.1"
-    remark-lint-hard-break-spaces: "npm:^4.1.1"
-    remark-lint-heading-style: "npm:^4.0.1"
-    remark-lint-link-title-style: "npm:^4.0.1"
-    remark-lint-list-item-bullet-indent: "npm:^5.0.1"
-    remark-lint-list-item-indent: "npm:^4.0.1"
-    remark-lint-no-blockquote-without-marker: "npm:^6.0.1"
-    remark-lint-no-consecutive-blank-lines: "npm:^5.0.1"
-    remark-lint-no-duplicate-definitions: "npm:^4.0.1"
-    remark-lint-no-heading-content-indent: "npm:^5.0.1"
-    remark-lint-no-shortcut-reference-image: "npm:^4.0.1"
-    remark-lint-no-shortcut-reference-link: "npm:^4.0.1"
-    remark-lint-no-unused-definitions: "npm:^4.0.2"
-    remark-lint-ordered-list-marker-style: "npm:^4.0.1"
-    remark-lint-rule-style: "npm:^4.0.1"
-    remark-lint-strong-marker: "npm:^4.0.1"
-    remark-lint-table-cell-padding: "npm:^5.1.1"
-    remark-math: "npm:^6.0.0"
-    remark-stringify: "npm:^11.0.0"
-    sanitize-filename: "npm:^1.6.5"
-    semver: "npm:^7.8.6"
-    style-loader: "npm:^4.0.0"
-    tippy.js: "npm:^6.3.7"
-    ts-loader: "npm:^9.6.2"
-    tsx: "npm:^4.23.15"
-    typescript: "npm:^5.9.3"
-    underscore: "npm:^1.13.8"
-    unified: "npm:^11.0.5"
-    vue: "npm:^3.5.45"
-    vue-eslint-parser: "npm:^10.4.2"
-    vue-loader: "npm:^17.4.2"
-    vue-tsc: "npm:^3.3.14"
-    vue-virtual-scroller: "npm:^3.0.5"
-    w3c-keyname: "npm:^2.2.8"
-    webpack: "npm:^5.112.2"
-    yaml: "npm:^2.9.1"
+    "@vue/devtools-api": "npm:8.2.1"
+    adm-zip: "npm:0.6.1"
+    archiver: "npm:8.0.0"
+    astrocite: "npm:0.16.4"
+    bcp-47: "npm:2.1.2"
+    bibliojson: "npm:4.1.0"
+    chalk: "npm:6.0.1"
+    chokidar: "npm:6.0.0"
+    citeproc: "npm:2.4.63"
+    codemirror-lang-elixir: "npm:4.0.1"
+    codemirror-lang-hcl: "npm:0.2.0"
+    copy-webpack-plugin: "npm:14.0.0"
+    cross-env: "npm:10.1.0"
+    css-loader: "npm:7.1.5"
+    d3: "npm:7.9.2"
+    dompurify: "npm:3.4.17"
+    electron: "npm:44.10.2"
+    electron-builder: "npm:26.18.1"
+    electron-devtools-installer: "npm:4.0.0"
+    eslint: "npm:10.14.0"
+    eslint-plugin-import: "npm:2.32.0"
+    eslint-plugin-n: "npm:18.5.0"
+    eslint-plugin-promise: "npm:7.3.0"
+    eslint-plugin-vue: "npm:10.12.0"
+    fix-path: "npm:5.0.0"
+    gemoji: "npm:8.1.0"
+    gettext-parser: "npm:10.0.0"
+    jsdom: "npm:31.0.0"
+    katex: "npm:0.16.47"
+    ky: "npm:2.2.0"
+    lang-criticmarkup: "npm:0.3.0"
+    less: "npm:4.9.1"
+    less-loader: "npm:13.1.0"
+    luxon: "npm:3.7.2"
+    mermaid: "npm:12.3.0"
+    mocha: "npm:12.0.3"
+    node-loader: "npm:2.1.0"
+    nodehun: "npm:3.0.2"
+    nyc: "npm:18.0.0"
+    pinia: "npm:4.1.0"
+    rehype-parse: "npm:9.0.1"
+    rehype-remark: "npm:10.0.1"
+    rehype-remove-comments: "npm:6.1.1"
+    remark: "npm:15.0.1"
+    remark-frontmatter: "npm:5.0.0"
+    remark-gfm: "npm:4.0.1"
+    remark-lint: "npm:10.0.1"
+    remark-lint-blockquote-indentation: "npm:4.0.1"
+    remark-lint-checkbox-character-style: "npm:5.0.1"
+    remark-lint-code-block-style: "npm:4.0.1"
+    remark-lint-emphasis-marker: "npm:4.0.1"
+    remark-lint-fenced-code-marker: "npm:4.0.1"
+    remark-lint-hard-break-spaces: "npm:4.1.1"
+    remark-lint-heading-style: "npm:4.0.1"
+    remark-lint-link-title-style: "npm:4.0.1"
+    remark-lint-list-item-bullet-indent: "npm:5.0.1"
+    remark-lint-list-item-indent: "npm:4.0.1"
+    remark-lint-no-blockquote-without-marker: "npm:6.0.1"
+    remark-lint-no-consecutive-blank-lines: "npm:5.0.1"
+    remark-lint-no-duplicate-definitions: "npm:4.0.1"
+    remark-lint-no-heading-content-indent: "npm:5.0.1"
+    remark-lint-no-shortcut-reference-image: "npm:4.0.1"
+    remark-lint-no-shortcut-reference-link: "npm:4.0.1"
+    remark-lint-no-unused-definitions: "npm:4.0.2"
+    remark-lint-ordered-list-marker-style: "npm:4.0.1"
+    remark-lint-rule-style: "npm:4.0.1"
+    remark-lint-strong-marker: "npm:4.0.1"
+    remark-lint-table-cell-padding: "npm:5.1.1"
+    remark-math: "npm:6.0.0"
+    remark-stringify: "npm:11.0.0"
+    sanitize-filename: "npm:1.6.5"
+    semver: "npm:7.8.6"
+    style-loader: "npm:4.0.0"
+    tippy.js: "npm:6.3.7"
+    ts-loader: "npm:9.6.2"
+    tsx: "npm:4.23.15"
+    typescript: "npm:5.9.3"
+    underscore: "npm:1.13.8"
+    unified: "npm:11.0.5"
+    vue: "npm:3.5.45"
+    vue-eslint-parser: "npm:10.4.2"
+    vue-loader: "npm:17.4.2"
+    vue-tsc: "npm:3.3.14"
+    vue-virtual-scroller: "npm:3.0.5"
+    w3c-keyname: "npm:2.2.8"
+    webpack: "npm:5.112.2"
+    yaml: "npm:2.9.1"
   dependenciesMeta:
     nodehun:
       built: true
