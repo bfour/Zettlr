@@ -12,13 +12,15 @@
  * END HEADER
  */
 
-import { type ChangeSpec, EditorSelection } from '@codemirror/state'
+import { type ChangeSpec, type EditorState, type SelectionRange, EditorSelection } from '@codemirror/state'
 import { type EditorView } from '@codemirror/view'
 import { configField, configUpdateEffect } from '../util/configuration'
 import { indentUnit, language, syntaxTree } from '@codemirror/language'
-import { formatPandocAttributes, type ParsedPandocAttributes } from 'source/common/pandoc-util/parse-pandoc-attributes'
+import type { SyntaxNode } from '@lezer/common'
+import { formatPandocAttributes, parsePandocAttributes, type ParsedPandocAttributes } from 'source/common/pandoc-util/parse-pandoc-attributes'
 import { indentMore } from '@codemirror/commands'
 import { nodeInSelection } from '../util/node-in-selection'
+import { isColoredHighlightStyle } from '../util/highlight-style'
 
 /**
  * Helper function that checks whether the provided target EditorView uses a
@@ -395,6 +397,84 @@ export function applyHighlight (target: EditorView): boolean {
     applyInlineMarkup(target, markup, markup)
   }
 
+  return true
+}
+
+function selectedHighlight (state: EditorState, range: SelectionRange): { from: number, to: number, text: string }|undefined {
+  for (let node: SyntaxNode|null = syntaxTree(state).resolveInner(range.from, 1); node !== null; node = node.parent) {
+    const isSpan = node.name === 'PandocSpan'
+    if (!isSpan && node.name !== 'HighlightContent') {
+      continue
+    }
+
+    const [ opening, closing ] = node.getChildren(isSpan ? 'PandocSpanMark' : 'HighlightMark')
+    if (opening === undefined || closing === undefined) {
+      continue
+    }
+    const whole = range.from === node.from && range.to === node.to
+    const contents = range.from === opening.to && range.to === closing.from
+    if (!whole && !contents) {
+      continue
+    }
+    if (isSpan) {
+      const attributes = node.getChild('PandocAttribute')
+      if (attributes === null) {
+        continue
+      }
+      const { id, classes, properties = {} } = parsePandocAttributes(state.sliceDoc(attributes.from, attributes.to))
+      if (id !== undefined || classes?.length !== 1 || classes[0] !== 'mark' ||
+        Object.keys(properties).some(key => key !== 'style') ||
+        (properties.style !== undefined && !isColoredHighlightStyle(properties.style))) {
+        continue
+      }
+    }
+
+    return { from: node.from, to: node.to, text: state.sliceDoc(opening.to, closing.from) }
+  }
+}
+
+/**
+ * Apply a chosen colour using an HTML-compatible Pandoc span. Selecting the
+ * full text of an existing highlight allows it to be recoloured in place.
+ */
+export function applyHighlightColor (view: EditorView, color?: string): boolean {
+  const style = color === undefined ? undefined : `background-color: ${color}`
+  if (view.state.readOnly || !viewContainsMarkdown(view) || (style !== undefined && !isColoredHighlightStyle(style))) {
+    return false
+  }
+
+  const defaultMarkup = view.state.field(configField, false)?.highlightFormatting ?? '=='
+  const useSpan = color !== undefined || defaultMarkup === 'span'
+  const attributes = formatPandocAttributes({
+    classes: ['mark'],
+    properties: style === undefined ? undefined : { style }
+  })
+  const opening = useSpan ? '[' : '=='
+  const closing = useSpan ? `]{${attributes}}` : '=='
+
+  const transaction = view.state.changeByRange(range => {
+    if (range.empty) {
+      return { range }
+    }
+
+    const previous = selectedHighlight(view.state, range)
+    const { from, to, text } = previous ?? { from: range.from, to: range.to, text: view.state.sliceDoc(range.from, range.to) }
+    const parts = text.split(/(\n[ \t]*\n)/)
+    const marked = parts.map((part, index) => index % 2 === 0 && part.trim() !== '' ? opening + part + closing : part)
+    const insert = marked.join('')
+    if (insert === view.state.sliceDoc(from, to)) {
+      return { range }
+    }
+
+    const start = from + (marked[0] === parts[0] ? 0 : opening.length)
+    const end = from + insert.length - (marked.at(-1) === parts.at(-1) ? 0 : closing.length)
+    return {
+      changes: { from, to, insert },
+      range: range.anchor > range.head ? EditorSelection.range(end, start) : EditorSelection.range(start, end)
+    }
+  })
+
+  view.dispatch(transaction, { userEvent: 'input.format' })
   return true
 }
 
