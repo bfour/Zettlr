@@ -17,8 +17,8 @@
 import { defineStore } from 'pinia'
 import type { DocumentInfo } from 'source/common/modules/markdown-editor'
 import type { ToCEntry } from 'source/common/modules/markdown-editor/plugins/toc-field'
-import type { DocumentComment } from 'source/win-main/util/document-comments'
-import { computed, ref, shallowReactive, type Ref } from 'vue'
+import type { DocumentComment } from 'source/common/modules/markdown-editor/util/document-comments'
+import { computed, ref, shallowReactive, shallowRef, type Ref } from 'vue'
 import { type WritingTarget } from '@providers/targets'
 import type { AssetsProviderIPCAPI } from 'source/app/service-providers/assets'
 import type { SearchResultWrapper } from 'source/win-main/GlobalSearch.vue'
@@ -58,6 +58,12 @@ export const useWindowStateStore = defineStore('window-state', () => {
     comments: DocumentComment[]
     selectComment: (comment: DocumentComment) => void
   }>())
+  const commentDraft = shallowRef<{
+    leafId: string
+    path: string
+    quote: string
+    submit: (text: string) => boolean
+  }>()
   const snippets = ref<SnippetRecord[]>([])
   const writingTargets = ref<WritingTarget[]>([])
 
@@ -109,6 +115,7 @@ export const useWindowStateStore = defineStore('window-state', () => {
     activeDocumentInfo,
     tableOfContents,
     commentsByLeaf,
+    commentDraft,
     searchResults,
     addSearchResult,
     maxSearchResultWeight,
