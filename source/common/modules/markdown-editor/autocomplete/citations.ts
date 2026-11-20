@@ -12,7 +12,7 @@
  * END HEADER
  */
 
-import { type Completion } from '@codemirror/autocomplete'
+import { acceptCompletion, selectedCompletion, type Completion } from '@codemirror/autocomplete'
 import { type EditorState, StateEffect, StateField } from '@codemirror/state'
 import { type Command, type EditorView } from '@codemirror/view'
 import { type AutocompletePlugin } from '.'
@@ -46,13 +46,20 @@ export const citekeyUpdateField = StateField.define<Completion[]>({
           displayLabel: entry.title || entry.citekey,
           detail: [ entry.authors, entry.year ].filter(Boolean).join(' · '),
           info: entry.citekey,
-          apply: (view, completion, from, to) => applyCitationCompletion(view, completion.label, from, to)
+          apply: applyCitationSuggestion
         }))
       }
     }
     return val
   }
 })
+
+function applyCitationSuggestion (view: EditorView, completion: Completion, from: number, to: number): void {
+  applyCitationCompletion(view, completion.label, from, to)
+}
+
+export const acceptCitationCompletion: Command = view =>
+  selectedCompletion(view.state)?.apply === applyCitationSuggestion && acceptCompletion(view)
 
 /**
  * This function takes the citations from the corresponding database and returns

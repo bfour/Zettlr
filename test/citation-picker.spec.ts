@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict'
+import { autocompletion, selectedCompletion, startCompletion } from '@codemirror/autocomplete'
 import { EditorState } from '@codemirror/state'
-import { EditorView } from '@codemirror/view'
-import { getCitationPrefix, insertCitation } from '../source/common/modules/markdown-editor/autocomplete/citations'
+import { EditorView, keymap, runScopeHandlers } from '@codemirror/view'
+import { citekeyUpdate, citekeyUpdateField, getCitationPrefix, insertCitation } from '../source/common/modules/markdown-editor/autocomplete/citations'
+import { mainEditorKeybindings } from '../source/common/modules/markdown-editor/keymaps/default'
 import { configField, configUpdateEffect } from '../source/common/modules/markdown-editor/util/configuration'
 import { searchCitations, toCitationPickerResult } from '../source/win-main/util/citation-picker'
 
@@ -76,13 +78,16 @@ describe('Citation picker', () => {
 describe('Citation picker insertion', () => {
   const originalRequestFrame = window.requestAnimationFrame
   const originalCancelFrame = window.cancelAnimationFrame
+  const originalLanguage = window.config.get('appLang')
 
   before(() => {
+    window.config.set('appLang', 'en')
     window.requestAnimationFrame = callback => window.setTimeout(() => callback(performance.now()), 0)
     window.cancelAnimationFrame = id => window.clearTimeout(id)
   })
 
   after(() => {
+    window.config.set('appLang', originalLanguage)
     window.requestAnimationFrame = originalRequestFrame
     window.cancelAnimationFrame = originalCancelFrame
   })
@@ -111,4 +116,66 @@ describe('Citation picker insertion', () => {
       view.destroy()
     }
   })
+  it('uses Enter for inline citations with the general autocomplete preference off', async () => {
+    const keys = mainEditorKeybindings([], { autocompleteWithEnter: false, autocompleteWithTab: true })
+    const state = EditorState.create({
+      doc: '@smi',
+      selection: { anchor: 4 },
+      extensions: [
+        configField,
+        citekeyUpdateField,
+        keymap.of(keys),
+        autocompletion({
+          defaultKeymap: false,
+          interactionDelay: 0,
+          override: [ ctx => ({ from: 1, options: ctx.state.field(citekeyUpdateField) }) ]
+        })
+      ]
+    })
+    const view = new EditorView({ state })
+    try {
+      view.dispatch({ effects: citekeyUpdate.of([
+        { citekey: 'smith2024', title: 'Research', authors: 'Smith', year: '2024' }
+      ]) })
+      await openCompletion(view)
+      assert.equal(runScopeHandlers(view, new KeyboardEvent('keydown', { key: 'Enter' }), 'editor'), true)
+      assert.equal(view.state.doc.toString(), '[@smith2024]')
+    } finally {
+      view.destroy()
+    }
+  })
+
+  it('keeps Enter as a newline for other suggestions when the preference is off', async () => {
+    const keys = mainEditorKeybindings([], { autocompleteWithEnter: false, autocompleteWithTab: true })
+    const state = EditorState.create({
+      doc: 'exam',
+      selection: { anchor: 4 },
+      extensions: [
+        configField,
+        keymap.of(keys),
+        autocompletion({
+          defaultKeymap: false,
+          interactionDelay: 0,
+          override: [ () => ({ from: 0, options: [{ label: 'example' }] }) ]
+        })
+      ]
+    })
+    const view = new EditorView({ state })
+    try {
+      await openCompletion(view)
+      assert.equal(runScopeHandlers(view, new KeyboardEvent('keydown', { key: 'Enter' }), 'editor'), true)
+      assert.equal(view.state.doc.toString(), 'exam\n')
+    } finally {
+      view.destroy()
+    }
+  })
+
 })
+
+async function openCompletion (view: EditorView): Promise<void> {
+  assert.equal(startCompletion(view), true)
+  for (let attempt = 0; attempt < 40 && selectedCompletion(view.state) === null; attempt++) {
+    await new Promise(resolve => setTimeout(resolve, 10))
+  }
+  assert.ok(selectedCompletion(view.state))
+}
