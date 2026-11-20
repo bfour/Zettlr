@@ -96,7 +96,7 @@ const tabs = computed(() => [
     label: trans('References')
   },
   ...(quartoProject.value === undefined ? [] : [{
-    icon: 'book',
+    icon: 'quarto',
     id: 'quarto',
     target: 'sidebar-quarto',
     label: trans('Quarto book')

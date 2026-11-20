@@ -33,6 +33,8 @@ import IndentedViewListIcon from './icons/clarity-custom/indented-view-list.svg'
 import RegExpIcon from './icons/clarity-custom/regexp.svg'
 import GitIcon from './icons/clarity-custom/git.svg'
 import MarkdownIcon from './icons/clarity-custom/markdown.svg'
+// Source: https://github.com/quarto-dev/quarto-web/blob/ac878dfc989718894e9f8a003080d803bf4b34a4/assets/images/quarto-icon.svg
+import QuartoIcon from './icons/clarity-custom/quarto.svg'
 
 export default async function loadIcons (): Promise<void> {
   // I don't know why they decided to not export an "all" collection, but so be it.
@@ -61,6 +63,7 @@ export default async function loadIcons (): Promise<void> {
     [ 'regexp', { outline: RegExpIcon }],
     [ 'footnote', { outline: FootnoteIcon }],
     [ 'markdown', { outline: MarkdownIcon }],
+    [ 'quarto', { outline: QuartoIcon }],
     [ 'git', {
       outline: GitIcon,
       solid: GitIcon

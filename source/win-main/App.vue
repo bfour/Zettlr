@@ -617,7 +617,7 @@ const toolbarControls = computed<ToolbarControl[]>(() => {
       type: 'button',
       id: 'markdownComment',
       title: trans('Insert comment'),
-      icon: 'code',
+      icon: 'chat-bubble',
       visible: getToolbarButtonDisplay('showMarkdownCommentButton')
     },
     {
