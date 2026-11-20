@@ -1,60 +1,9 @@
-const { spawn } = require('child_process')
 const fs = require('fs').promises
 const path = require('path')
 const { FusesPlugin } = require('@electron-forge/plugin-fuses')
 const { FuseV1Options, FuseVersion } = require('@electron/fuses')
 const { getGitHash } = require('./scripts/get-git-hash.js')
-
-/**
- * This function runs the get-pandoc script in order to download the requested
- * version of Pandoc. This way we can guarantee that the correct Pandoc version
- * will be present when packaging the application.
- *
- * @param   {string}  platform  The platform for which to download.
- * @param   {string}  arch      The architecture for which to download.
- */
-async function downloadPandoc (platform, arch) {
-  // Check we have a valid platform ...
-  if (![ 'darwin', 'linux', 'win32' ].includes(platform)) {
-    throw new Error(`Cannot download Pandoc: Platform ${platform} is not recognised!`)
-  }
-
-  // ... and a valid architecture.
-  if (![ 'x64', 'arm' ].includes(arch)) {
-    throw new Error(`Cannot download Pandoc: Architecture ${arch} is not supported!`)
-  }
-
-  // Now run the script and wait for it to finish.
-  await new Promise((resolve, reject) => {
-    const argWin = [ 'bash.exe', [ './scripts/get-pandoc.sh', platform, arch ] ]
-    const argUnix = [ './scripts/get-pandoc.sh', [ platform, arch ] ]
-    // Use the spread operator to spawn the process using the correct arguments.
-    const shellProcess = (process.platform === 'win32') ? spawn(...argWin) : spawn(...argUnix)
-
-    // To not mess with Electron forge's output, suppress this processes output.
-    // But we should reject if there's any error output.
-    let shouldReject = false
-    let stderrDetails = ""
-    shellProcess.stderr.on('data', (_data) => {
-      shouldReject = true
-      stderrDetails += _data
-    })
-
-    // Resolve or reject once the process has finished.
-    shellProcess.on('close', (code, _signal) => {
-      if (code !== 0 || shouldReject) {
-        reject(new Error(`Failed to download Pandoc: Process quit with code ${code}. If the code is 0, then there was error output. ${stderrDetails ? ("Error output: " + stderrDetails) : ""}`))
-      } else {
-        resolve()
-      }
-    })
-
-    // Reject on errors.
-    shellProcess.on('error', (err) => {
-      reject(err)
-    })
-  })
-}
+const { downloadPandoc } = require('./scripts/get-pandoc.js')
 
 /**
  * Since all our renderers share the same static HTML file and the same preload
@@ -128,7 +77,7 @@ module.exports = {
         try {
           await fs.lstat(path.join(__dirname, `./resources/pandoc-${platform}-${arch}`))
         } catch (err) {
-          await downloadPandoc(platform, arch)
+          await downloadPandoc(platform, targetArch)
         }
 
         await fs.copyFile(path.join(__dirname, `./resources/pandoc-${platform}-${arch}`), path.join(__dirname, './resources/pandoc'))

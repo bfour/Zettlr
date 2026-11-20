@@ -13550,7 +13550,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^7.5.4, tar@npm:^7.5.7":
+"tar@npm:7.5.22, tar@npm:^7.5.4, tar@npm:^7.5.7":
   version: 7.5.22
   resolution: "tar@npm:7.5.22"
   dependencies:
@@ -14021,17 +14021,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici@npm:7.30.2, undici@npm:^7.24.4":
+  version: 7.30.2
+  resolution: "undici@npm:7.30.2"
+  checksum: 10/9e88f3950386de4f99ee3255825eafb798ee92061a26aee66f40b78586b6d1508e8fd77dbe495d771626ef83ea1fa8b72444b05f071d418f48fff3a86dc9bfb1
+  languageName: node
+  linkType: hard
+
 "undici@npm:^6.25.0":
   version: 6.29.1
   resolution: "undici@npm:6.29.1"
   checksum: 10/92acb64ec190fe3499dec69830fdfc48e28f6f19627bad7563cfd57c37b4e95379c12b8ac15a2e6a8739eaac358f17503a229c160d3dc8774141b1e270d8aa57
-  languageName: node
-  linkType: hard
-
-"undici@npm:^7.24.4":
-  version: 7.30.2
-  resolution: "undici@npm:7.30.2"
-  checksum: 10/9e88f3950386de4f99ee3255825eafb798ee92061a26aee66f40b78586b6d1508e8fd77dbe495d771626ef83ea1fa8b72444b05f071d418f48fff3a86dc9bfb1
   languageName: node
   linkType: hard
 
@@ -15137,11 +15137,13 @@ __metadata:
     sanitize-filename: "npm:1.6.5"
     semver: "npm:7.8.6"
     style-loader: "npm:4.0.0"
+    tar: "npm:7.5.22"
     tippy.js: "npm:6.3.7"
     ts-loader: "npm:9.6.2"
     tsx: "npm:4.23.15"
     typescript: "npm:5.9.3"
     underscore: "npm:1.13.8"
+    undici: "npm:7.30.2"
     unified: "npm:11.0.5"
     vue: "npm:3.5.45"
     vue-eslint-parser: "npm:10.4.2"
