@@ -69,6 +69,7 @@ export interface EditorConfiguration {
   boldFormatting: '**'|'__'
   italicFormatting: '*'|'_'
   highlightFormatting: 'span'|'=='
+  highlightColor: string|null
   citeStyle: 'in-text'|'in-text-suffix'|'regular'
   inputMode: 'default'|'vim'|'emacs'
   muteLines: boolean
@@ -139,6 +140,7 @@ export function getDefaultConfig (): EditorConfiguration {
     boldFormatting: '**',
     italicFormatting: '_',
     highlightFormatting: '==',
+    highlightColor: null,
     citeStyle: 'regular',
     muteLines: true,
     readabilityAlgorithm: 'dale-chall',

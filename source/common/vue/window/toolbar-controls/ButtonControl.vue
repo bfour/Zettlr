@@ -4,6 +4,7 @@
       v-bind:id="`toolbar-${control.id ?? ''}`"
       role="button"
       v-bind:title="titleWithFallback"
+      v-bind:aria-expanded="control.expanded"
     >
       <cds-icon
         v-if="control.icon"
@@ -14,6 +15,12 @@
       <template v-if="buttonText !== undefined">
         {{ buttonText }}
       </template>
+      <span
+        v-if="control.indicatorColor !== undefined"
+        class="button-indicator"
+        v-bind:style="{ backgroundColor: control.indicatorColor }"
+        aria-hidden="true"
+      ></span>
     </button>
     <span v-if="showLabel === true" class="toolbar-label">{{ labelWithFallback }}</span>
   </div>
@@ -45,6 +52,8 @@ export interface ToolbarButtonControl {
   icon: string
   badge?: boolean
   direction?: 'up'|'down'|'left'|'right'
+  expanded?: boolean
+  indicatorColor?: string
   // Allow arbitrary properties that we ignore
   [key: string]: unknown
 }
@@ -65,4 +74,16 @@ const labelWithFallback = computed<string>(() => {
 </script>
 
 <style lang="css" scoped>
+button:has(.button-indicator) {
+  position: relative;
+}
+
+.button-indicator {
+  position: absolute;
+  bottom: 3px;
+  width: 16px;
+  height: 3px;
+  border-radius: 2px;
+  pointer-events: none;
+}
 </style>

@@ -72,11 +72,13 @@ import {
 // Custom commands
 import {
   applyComment,
+  applyHighlightColor,
   applyTaskList,
   insertImage,
   insertLink,
   applyPandocDivOrSpan
 } from './commands/markdown'
+import { clearHighlight } from './commands/clear-highlight'
 import { addNewFootnote } from './commands/footnotes'
 
 // Utilities
@@ -652,6 +654,12 @@ export default class MarkdownEditor extends EventEmitter {
     switch (cmd) {
       case 'markdownComment':
         applyComment(this._instance)
+        break
+      case 'markdownHighlight':
+        applyHighlightColor(this._instance)
+        break
+      case 'markdownClearHighlight':
+        clearHighlight(this._instance)
         break
       case 'markdownLink':
         insertLink(this._instance)
