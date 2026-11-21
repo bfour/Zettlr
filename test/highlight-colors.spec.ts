@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
+import { syntaxTree } from '@codemirror/language'
 import { EditorSelection, EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
-import { applyHighlightColor } from '../source/common/modules/markdown-editor/commands/markdown'
+import { applyHighlight, applyHighlightColor } from '../source/common/modules/markdown-editor/commands/markdown'
 import markdownParser from '../source/common/modules/markdown-editor/parser/markdown-parser'
 import { configField, configUpdateEffect } from '../source/common/modules/markdown-editor/util/configuration'
 import { md2html } from '../source/common/modules/markdown-utils'
@@ -51,6 +52,21 @@ describe('Highlight colors', () => {
     assert.equal(editor.state.sliceDoc(editor.state.selection.main.from, editor.state.selection.main.to), inner)
   })
 
+  it('reuses the configured color for toolbar and keyboard highlights', () => {
+    const editor = edit('first and second', EditorSelection.single(0, 5))
+    editor.dispatch({ effects: configUpdateEffect.of({ highlightColor: blue }) })
+
+    assert.equal(applyHighlightColor(editor), true)
+    const from = editor.state.doc.toString().indexOf('second')
+    editor.dispatch({ selection: EditorSelection.single(from, from + 6) })
+    assert.equal(applyHighlight(editor), true)
+    assert.equal(editor.state.doc.toString(), `[first]{.mark style="background-color: ${blue}"} and [second]{.mark style="background-color: ${blue}"}`)
+
+    editor.dispatch({ effects: configUpdateEffect.of({ highlightColor: null }) })
+    assert.equal(applyHighlightColor(editor), true)
+    assert.equal(editor.state.doc.toString(), `[first]{.mark style="background-color: ${blue}"} and ==second==`)
+  })
+
   it('recolors an existing highlight with only the highlighted text selected', () => {
     const source = `[one passage]{.mark style="background-color: ${yellow}"}`
     const editor = edit(source, EditorSelection.single(1, 1 + 'one passage'.length))
@@ -82,6 +98,18 @@ describe('Highlight colors', () => {
     assert.equal(applyHighlightColor(editor, undefined), true)
     assert.equal(editor.state.doc.toString(), '[one passage]{.mark}')
   })
+
+  for (const text of [ ' result', 'sul' ]) {
+    it(`uses a default Pandoc span when legacy markers cannot wrap "${text}"`, () => {
+      const source = 'A result here'
+      const from = source.indexOf(text)
+      const editor = edit(source, EditorSelection.single(from, from + text.length))
+
+      assert.equal(applyHighlightColor(editor), true)
+      assert.equal(editor.state.doc.toString(), source.replace(text, `[${text}]{.mark}`))
+      assert.match(syntaxTree(editor.state).toString(), /PandocSpan\(/)
+    })
+  }
 
   it('highlights multiple selections, preserving a reversed selection', () => {
     const source = 'first and second'

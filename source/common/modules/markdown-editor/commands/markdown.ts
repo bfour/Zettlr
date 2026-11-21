@@ -20,7 +20,7 @@ import type { SyntaxNode } from '@lezer/common'
 import { formatPandocAttributes, parsePandocAttributes, type ParsedPandocAttributes } from 'source/common/pandoc-util/parse-pandoc-attributes'
 import { indentMore } from '@codemirror/commands'
 import { nodeInSelection } from '../util/node-in-selection'
-import { isColoredHighlightStyle } from '../util/highlight-style'
+import { isColoredHighlightStyle, isHighlightBoundary } from '../util/highlight-style'
 
 /**
  * Helper function that checks whether the provided target EditorView uses a
@@ -385,11 +385,16 @@ export function applyComment (target: EditorView): boolean {
  * @return  {boolean}             Whether the command was applicable
  */
 export function applyHighlight (target: EditorView): boolean {
-  if (!viewContainsMarkdown(target)) {
+  if (target.state.readOnly || !viewContainsMarkdown(target)) {
     return false
   }
 
-  const markup: string = target.state.field(configField, false)?.highlightFormatting ?? '=='
+  const config = target.state.field(configField, false)
+  if (typeof config?.highlightColor === 'string') {
+    return applyHighlightColor(target, config.highlightColor)
+  }
+
+  const markup = config?.highlightFormatting ?? '=='
 
   if (markup === 'span') {
     applyPandocDivOrSpan(target, 'span', { classes: ['mark'] })
@@ -437,20 +442,20 @@ function selectedHighlight (state: EditorState, range: SelectionRange): { from: 
  * Apply a chosen colour using an HTML-compatible Pandoc span. Selecting the
  * full text of an existing highlight allows it to be recoloured in place.
  */
-export function applyHighlightColor (view: EditorView, color?: string): boolean {
+export function applyHighlightColor (
+  view: EditorView,
+  color = view.state.field(configField, false)?.highlightColor ?? undefined
+): boolean {
   const style = color === undefined ? undefined : `background-color: ${color}`
   if (view.state.readOnly || !viewContainsMarkdown(view) || (style !== undefined && !isColoredHighlightStyle(style))) {
     return false
   }
 
   const defaultMarkup = view.state.field(configField, false)?.highlightFormatting ?? '=='
-  const useSpan = color !== undefined || defaultMarkup === 'span'
   const attributes = formatPandocAttributes({
     classes: ['mark'],
     properties: style === undefined ? undefined : { style }
   })
-  const opening = useSpan ? '[' : '=='
-  const closing = useSpan ? `]{${attributes}}` : '=='
 
   const transaction = view.state.changeByRange(range => {
     if (range.empty) {
@@ -460,6 +465,15 @@ export function applyHighlightColor (view: EditorView, color?: string): boolean 
     const previous = selectedHighlight(view.state, range)
     const { from, to, text } = previous ?? { from: range.from, to: range.to, text: view.state.sliceDoc(range.from, range.to) }
     const parts = text.split(/(\n[ \t]*\n)/)
+    // Legacy delimiters require a word after the opening mark and boundaries
+    // outside both marks. Use a Pandoc span where that syntax would stay raw.
+    const useSpan = color !== undefined || defaultMarkup === 'span' ||
+      !isHighlightBoundary(view.state.sliceDoc(Math.max(0, from - 1), from)) ||
+      !isHighlightBoundary(view.state.sliceDoc(to, to + 1)) ||
+      parts.some((part, index) => index % 2 === 0 && part.trim() !== '' &&
+        (isHighlightBoundary(part[0]) || part !== part.trimEnd()))
+    const opening = useSpan ? '[' : '=='
+    const closing = useSpan ? `]{${attributes}}` : '=='
     const marked = parts.map((part, index) => index % 2 === 0 && part.trim() !== '' ? opening + part + closing : part)
     const insert = marked.join('')
     if (insert === view.state.sliceDoc(from, to)) {

@@ -103,6 +103,14 @@
     v-on:close="showTablePopover = false"
     v-on:insert-table="insertTable($event)"
   ></PopoverTable>
+  <PopoverHighlight
+    v-if="showHighlightPopover && highlightColorButton !== null"
+    v-bind:target="highlightColorButton"
+    v-bind:color="highlightColor"
+    v-on:select="setHighlightColor"
+    v-on:clear="clearSelectedHighlight"
+    v-on:close="showHighlightPopover = false"
+  ></PopoverHighlight>
   <PopoverDocInfo
     v-if="showDocInfoPopover && docInfoButton !== null && windowStateStore.activeDocumentInfo != null"
     v-bind:target="docInfoButton"
@@ -162,6 +170,7 @@ import PopoverStats from './PopoverStats.vue'
 import PopoverTags from './PopoverTags.vue'
 import PopoverPomodoro from './PopoverPomodoro.vue'
 import PopoverTable from './PopoverTable.vue'
+import PopoverHighlight from './PopoverHighlight.vue'
 import PopoverDocInfo from './PopoverDocInfo.vue'
 import PopoverPandoc from './PopoverPandoc.vue'
 import { trans } from '@common/i18n-renderer'
@@ -244,6 +253,8 @@ const tagsButton = ref<HTMLElement|null>(null)
 const showTagsPopover = ref<boolean>(false)
 const tableButton = ref<HTMLElement|null>(null)
 const showTablePopover = ref<boolean>(false)
+const highlightColorButton = ref<HTMLElement|null>(null)
+const showHighlightPopover = ref(false)
 const docInfoButton = ref<HTMLElement|null>(null)
 const showDocInfoPopover = ref<boolean>(false)
 const pomodoroButton = ref<HTMLElement|null>(null)
@@ -346,11 +357,14 @@ const sidebarsBeforeDistractionfree = ref<{ fileManager: boolean, sidebar: boole
 
 const sidebarVisible = computed<boolean>(() => configStore.config.window.sidebarVisible)
 const activeFile = computed(() => documentTreeStore.lastLeafActiveFile)
+const hasActiveMarkdownFile = computed(() => activeFile.value !== undefined && hasMarkdownExt(activeFile.value.path))
+const highlightColor = computed(() => configStore.config.editor.highlightColor ?? null)
 const quartoRendering = ref(false)
 let quartoRequest = 0
 let quartoRefreshTimer: ReturnType<typeof setTimeout>|undefined
 
 watch(() => activeFile.value?.path, path => {
+  showHighlightPopover.value = false
   clearTimeout(quartoRefreshTimer)
   if (windowStateStore.quartoProject?.chapters.some(chapter => chapter.path === path) !== true) {
     windowStateStore.quartoProject = undefined
@@ -611,7 +625,7 @@ const toolbarControls = computed<ToolbarControl[]>(() => {
       id: 'markdownCitation',
       title: trans('Insert citation'),
       icon: 'book',
-      visible: activeFile.value !== undefined && hasMarkdownExt(activeFile.value.path)
+      visible: hasActiveMarkdownFile.value
     },
     {
       type: 'button',
@@ -619,6 +633,23 @@ const toolbarControls = computed<ToolbarControl[]>(() => {
       title: trans('Insert comment'),
       icon: 'chat-bubble',
       visible: getToolbarButtonDisplay('showMarkdownCommentButton')
+    },
+    {
+      type: 'button',
+      id: 'markdownHighlight',
+      title: trans('Highlight'),
+      icon: 'highlighter',
+      indicatorColor: highlightColor.value?.slice(0, 7) ?? '#e1bf28',
+      visible: hasActiveMarkdownFile.value
+    },
+    {
+      type: 'button',
+      id: 'highlight-color',
+      title: trans('Highlight color'),
+      icon: 'angle',
+      direction: 'down',
+      expanded: showHighlightPopover.value,
+      visible: hasActiveMarkdownFile.value
     },
     {
       type: 'button',
@@ -1022,6 +1053,9 @@ function handleClick (clickedID?: string): void {
   } else if (clickedID === 'insert-table') {
     // Display the insertion popover
     showTablePopover.value = !showTablePopover.value
+  } else if (clickedID === 'highlight-color') {
+    highlightColorButton.value = document.querySelector('#toolbar-highlight-color')
+    showHighlightPopover.value = !showHighlightPopover.value
   } else if (clickedID === 'long-running-tasks') {
     // The tasks button is only mounted conditionally
     tasksButton.value = document.querySelector('#toolbar-long-running-tasks')
@@ -1043,6 +1077,17 @@ function handleClick (clickedID?: string): void {
     })
       .catch(err => console.error(err))
   }
+}
+
+function setHighlightColor (color: string|null): void {
+  configStore.setConfigValue('editor.highlightColor', color)
+  showHighlightPopover.value = false
+  highlightColorButton.value?.focus()
+}
+
+function clearSelectedHighlight (): void {
+  showHighlightPopover.value = false
+  handleClick('markdownClearHighlight')
 }
 
 function setPomodoroConfig (config: PomodoroConfig): void {

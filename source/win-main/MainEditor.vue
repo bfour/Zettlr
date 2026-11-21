@@ -311,6 +311,7 @@ const editorConfiguration = computed<EditorConfigOptions>(() => {
     boldFormatting: editor.boldFormatting,
     italicFormatting: editor.italicFormatting,
     highlightFormatting: editor.highlightFormatting,
+    highlightColor: editor.highlightColor,
     muteLines: configStore.config.muteLines,
     citeStyle: editor.citeStyle,
     readabilityAlgorithm: editor.readabilityAlgorithm,
