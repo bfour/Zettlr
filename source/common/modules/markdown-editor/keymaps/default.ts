@@ -268,7 +268,7 @@ export function mainEditorKeybindings (customShortcutMap: CustomEditorShortcut[]
     { key: sc('md-insert-link'), run: insertLink },
     { key: sc('md-highlight'), run: applyHighlight },
     { key: sc('md-insert-image'), run: insertImage },
-    { key: 'Mod-Shift-c', run: applyComment },
+    { key: sc('md-insert-comment'), run: applyComment },
     { key: 'Mod-Shift-y', run: requestCitationPicker },
     { key: sc('md-insert-footnote'), run: addNewFootnote },
 

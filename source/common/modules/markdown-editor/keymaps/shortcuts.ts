@@ -19,7 +19,7 @@ import { type DefaultShortcut, getDefaultKeybinding } from 'source/common/util/s
  */
 export type EditorShortcutName = 'autocomplete-invoke'|'autocomplete-accept'|
   // Markdown
-  'md-insert-link'|'md-insert-image'|'md-insert-footnote'|'md-highlight'|
+  'md-insert-link'|'md-insert-image'|'md-insert-footnote'|'md-insert-comment'|'md-highlight'|
   // Search
   'search-find-next'|'search-find-previous'|'search-select-matches'|
   'search-go-to-line'|'search-select-next'|
@@ -62,6 +62,7 @@ export const defaultKeybindings: Record<EditorShortcutName, DefaultShortcut> = {
   'md-insert-link': { key: 'Ctrl-k', mac: 'Mod-k' },
   'md-insert-image': { key: 'Ctrl-Alt-i', mac: 'Mod-Shift-i' },
   'md-insert-footnote': { key: 'Ctrl-Alt-f', mac: 'Mod-Alt-r' },
+  'md-insert-comment': { key: 'Ctrl-Shift-c', mac: 'Mod-Shift-c' },
   'md-highlight': { key: 'Ctrl-Shift-h' },
   'search-find-next': { key: 'Ctrl-g', mac: 'Mod-g' },
   'search-find-previous': { key: 'Ctrl-Shift-g', mac: 'Mod-Shift-g' },
