@@ -14,13 +14,18 @@
 
 import { type EditorView } from '@codemirror/view'
 import { trans } from '@common/i18n-renderer'
-import { applyBold, applyItalic } from '../commands/markdown'
+import { applyBold, applyComment, applyHighlight, applyItalic } from '../commands/markdown'
 import { copyAsHTML, copyAsPlain, cut, paste, pasteAsPlain } from '../util/copy-paste-cut'
 import { type AnyMenuItem } from '@common/modules/window-register/application-menu-helper'
 import { getTransformSubmenu } from './transform-items'
 import { getInsertSubmenu } from './insert-items'
+import { getCustomShortcut } from '../keymaps/shortcuts'
+import { configField } from '../util/configuration'
+import { cmShortcutToElectron } from 'source/common/util/shortcuts'
 
 export function getFormatMenuItems (view: EditorView): AnyMenuItem[] {
+  const shortcuts = view.state.field(configField, false)?.shortcuts ?? []
+
   return [
     {
       label: trans('Bold'),
@@ -33,6 +38,20 @@ export function getFormatMenuItems (view: EditorView): AnyMenuItem[] {
       accelerator: 'CmdOrCtrl+I',
       type: 'normal',
       action () { applyItalic(view) }
+    },
+    {
+      label: trans('Highlight'),
+      accelerator: cmShortcutToElectron(getCustomShortcut('md-highlight', shortcuts)),
+      type: 'normal',
+      enabled: !view.state.readOnly,
+      action () { applyHighlight(view) }
+    },
+    {
+      label: trans('Insert comment'),
+      accelerator: cmShortcutToElectron(getCustomShortcut('md-insert-comment', shortcuts)),
+      type: 'normal',
+      enabled: !view.state.readOnly,
+      action () { applyComment(view) }
     },
     {
       label: trans('Cut'),
@@ -48,7 +67,6 @@ export function getFormatMenuItems (view: EditorView): AnyMenuItem[] {
     },
     {
       label: trans('Copy as HTML'),
-      accelerator: 'CmdOrCtrl+Alt+C',
       type: 'normal',
       action () { copyAsHTML(view) }
     },

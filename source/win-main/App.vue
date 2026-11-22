@@ -176,6 +176,8 @@ import PopoverPandoc from './PopoverPandoc.vue'
 import { trans } from '@common/i18n-renderer'
 import localiseNumber from '@common/util/localise-number'
 import generateId from '@common/util/generate-id'
+import { cmShortcutToElectron } from '@common/util/shortcuts'
+import { getCustomShortcut } from '@common/modules/markdown-editor/keymaps/shortcuts'
 import {
   nextTick,
   ref,
@@ -531,6 +533,16 @@ const taskAborted = computed(() => LRTStore.tasks.filter(t => t.status === TaskS
 const taskError = computed(() => LRTStore.tasks.filter(t => t.status === TaskStatus.error).length)
 const taskOngoing = computed(() => LRTStore.tasks.filter(t => t.status === TaskStatus.ongoing).length)
 
+function editorShortcutTitle (label: string, name: 'md-highlight'|'md-insert-comment'): string {
+  const shortcut = configStore.config.shortcuts.editor[name] ?? ''
+  const accelerator = cmShortcutToElectron(getCustomShortcut(name, [{ name, shortcut }]))
+  if (accelerator === undefined) {
+    return label
+  }
+  const display = accelerator.replace('CmdOrCtrl', process.platform === 'darwin' ? 'Cmd' : 'Ctrl')
+  return `${label} (${display})`
+}
+
 const toolbarControls = computed<ToolbarControl[]>(() => {
   return [
     {
@@ -630,14 +642,14 @@ const toolbarControls = computed<ToolbarControl[]>(() => {
     {
       type: 'button',
       id: 'markdownComment',
-      title: trans('Insert comment'),
+      title: editorShortcutTitle(trans('Insert comment'), 'md-insert-comment'),
       icon: 'chat-bubble',
       visible: getToolbarButtonDisplay('showMarkdownCommentButton')
     },
     {
       type: 'button',
       id: 'markdownHighlight',
-      title: trans('Highlight'),
+      title: editorShortcutTitle(trans('Highlight'), 'md-highlight'),
       icon: 'highlighter',
       indicatorColor: highlightColor.value?.slice(0, 7) ?? '#e1bf28',
       visible: hasActiveMarkdownFile.value

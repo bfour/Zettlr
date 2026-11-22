@@ -59,7 +59,6 @@ export function displayTableContextMenu (event: MouseEvent, mainView: EditorView
     },
     {
       label: trans('Copy as HTML'),
-      accelerator: 'CmdOrCtrl+Alt+C',
       type: 'normal',
       action () { copyAsHTML(subviewOrView) }
     },

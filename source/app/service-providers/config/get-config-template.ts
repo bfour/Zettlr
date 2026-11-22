@@ -46,7 +46,7 @@ export type ConfigurableEditorShortcuts = Extends<
   'tr-quotes-to-magic'|'tr-remove-line-breaks'|'tr-sentence-case'|
   'tr-single-quotes-to-double'|'tr-straighten-quotes'|
   'tr-strip-duplicate-spaces'|'tr-title-case'|
-  'search-find-next'|'search-find-previous'
+  'search-find-next'|'search-find-previous'|'md-highlight'|'md-insert-comment'
 >
 export type ConfigurableUIShortcuts = Extends<MenuShortcutName, 'previous-tab'|'next-tab'|'filter-files'>
 
@@ -564,6 +564,8 @@ export function getConfigTemplate (): ConfigOptions {
         'filter-files': ''
       },
       editor: {
+        'md-highlight': '',
+        'md-insert-comment': '',
         'table-align': '',
         'table-align-col-left': '',
         'table-align-col-center': '',

@@ -126,6 +126,20 @@ export function getShortcutFields (config: ConfigOptions): PreferencesFieldset[]
       fields: [
         {
           type: 'shortcut',
+          label: trans('Highlight'),
+          model: 'shortcuts.editor.md-highlight',
+          defaultShortcut: defaultEditorShortcut('md-highlight'),
+          conflicts: conflicts('md-highlight')
+        },
+        {
+          type: 'shortcut',
+          label: trans('Insert comment'),
+          model: 'shortcuts.editor.md-insert-comment',
+          defaultShortcut: defaultEditorShortcut('md-insert-comment'),
+          conflicts: conflicts('md-insert-comment')
+        },
+        {
+          type: 'shortcut',
           label: trans('Find next search result'),
           model: 'shortcuts.editor.search-find-next',
           defaultShortcut: defaultEditorShortcut('search-find-next'),

@@ -65,7 +65,7 @@ import {
   applyHighlight,
   insertTabOrSpace
 } from '../commands/markdown'
-import { pasteAsPlain, copyAsHTML } from '../util/copy-paste-cut'
+import { pasteAsPlain } from '../util/copy-paste-cut'
 import { addColAfter, addColBefore, moveNextCell, movePrevCell, swapNextCol, swapPrevCol } from '../table-editor/commands/columns'
 import { alignTables, setAlignment } from '../table-editor/commands/tables'
 import { addRowAfter, addRowBefore, moveNextRow, movePrevRow, swapNextRow, swapPrevRow } from '../table-editor/commands/rows'
@@ -237,7 +237,6 @@ export function mainEditorKeybindings (customShortcutMap: CustomEditorShortcut[]
     // Some keybindings that should work even in case of conflicts
     { key: 'Space', run: handleAutocorrectSpace },
     { key: 'Mod-Shift-v', run: view => { pasteAsPlain(view); return true } },
-    { key: 'Mod-Alt-c', run: view => { copyAsHTML(view); return true } },
     { key: '"', run: handleQuote('"') },
     { key: "'", run: handleQuote("'") },
 
@@ -268,7 +267,7 @@ export function mainEditorKeybindings (customShortcutMap: CustomEditorShortcut[]
     { key: sc('md-insert-link'), run: insertLink },
     { key: sc('md-highlight'), run: applyHighlight },
     { key: sc('md-insert-image'), run: insertImage },
-    { key: 'Mod-Shift-c', run: applyComment },
+    { key: sc('md-insert-comment'), run: applyComment },
     { key: 'Mod-Shift-y', run: requestCitationPicker },
     { key: sc('md-insert-footnote'), run: addNewFootnote },
 
@@ -321,7 +320,6 @@ export function mainEditorKeybindings (customShortcutMap: CustomEditorShortcut[]
     { mac: 'Ctrl-d', run: deleteCharForward },
     { mac: 'Ctrl-h', run: deleteCharBackward },
     { mac: 'Ctrl-k', run: deleteToLineEnd },
-    { mac: 'Ctrl-Alt-h', run: deleteGroupBackward },
 
     { mac: 'Ctrl-o', run: splitLine },
     { mac: 'Ctrl-t', run: transposeChars },
