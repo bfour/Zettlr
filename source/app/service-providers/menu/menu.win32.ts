@@ -360,7 +360,6 @@ export default function getMenu (
         {
           id: 'menu.copy_html',
           label: trans('Copy as HTML'),
-          accelerator: 'Ctrl+Alt+C',
           click: function (_menuitem, focusedWindow) {
             (focusedWindow as BrowserWindow|undefined)?.webContents.send('shortcut', 'copy-as-html')
           }

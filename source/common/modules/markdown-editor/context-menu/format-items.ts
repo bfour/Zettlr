@@ -67,7 +67,6 @@ export function getFormatMenuItems (view: EditorView): AnyMenuItem[] {
     },
     {
       label: trans('Copy as HTML'),
-      accelerator: 'CmdOrCtrl+Alt+C',
       type: 'normal',
       action () { copyAsHTML(view) }
     },

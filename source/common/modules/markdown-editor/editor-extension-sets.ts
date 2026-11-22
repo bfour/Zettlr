@@ -249,7 +249,6 @@ function getGenericCodeExtensions (options: CoreExtensionOptions): Extension[] {
  *
  * - The core extensions
  * - The autocompletion functionality
- * - A few extra keys (e.g. for copying as HTML)
  * - The Markdown parser and syntax highlighter
  * - Renderers for the partial WYSIWYG-highlights
  * - A set of extensions to the default syntax of the Codemirror plugin
