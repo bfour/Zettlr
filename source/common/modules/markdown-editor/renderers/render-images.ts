@@ -21,7 +21,7 @@ import makeValidUri from '@common/util/make-valid-uri'
 import { linkImageMenu } from '../context-menu/link-image-menu'
 import { trans } from '@common/i18n-renderer'
 import clickAndSelect from './click-and-select'
-import { pathDirname } from '@common/util/renderer-path-polyfill'
+import { pathBasename, pathDirname } from '@common/util/renderer-path-polyfill'
 import { syntaxTree } from '@codemirror/language'
 import { parsePandocAttributes, type ParsedPandocAttributes } from 'source/common/pandoc-util/parse-pandoc-attributes'
 
@@ -44,6 +44,7 @@ function isDataUrl (url: string): boolean {
  * Also, this cache will be kept updated whenever an image is reloaded.
  */
 const IMAGE_HEIGHT_CACHE = new Map<string, number>()
+const PREVIEW_EXTENSIONS = [ '.png', '.svg', '.jpg', '.jpeg', '.webp', '.gif', '.bmp' ]
 
 /**
  * Resolves the actual image URL to load, provided the current file's location.
@@ -56,6 +57,31 @@ const IMAGE_HEIGHT_CACHE = new Map<string, number>()
 function resolveImageUrl (filePath: string, imageUrl: string): string {
   const basePath = pathDirname(filePath)
   return isDataUrl(imageUrl) ? imageUrl : makeValidUri(imageUrl, basePath)
+}
+
+function loadImagePreview (img: HTMLImageElement, caption: HTMLElement, source: string): void {
+  const url = new URL(source)
+  const path = url.pathname
+  const name = url.protocol === 'safe-file:' ? pathBasename(path) : ''
+  // Quarto defaults to PNG for HTML. Try other browser-readable variants when
+  // the exact local path and the PNG are unavailable.
+  const canTryExtensions = name !== '' && !/\.|%2e/i.test(name)
+  let nextExtension = 0
+
+  img.dataset.previewSource = source
+  img.onerror = () => {
+    const extension = canTryExtensions ? PREVIEW_EXTENSIONS[nextExtension++] : undefined
+    if (extension !== undefined) {
+      url.pathname = path + extension
+      img.src = url.href
+      return
+    }
+    img.onerror = null
+    img.src = img404
+    caption.textContent = trans('Image not found: %s', img.dataset.originalUrl)
+    caption.contentEditable = 'false'
+  }
+  img.src = source
 }
 
 /**
@@ -100,7 +126,10 @@ class ImageWidget extends WidgetType {
   }
 
   eq (other: ImageWidget) {
-    return this.imageTitle === other.imageTitle && this.imageUrl === other.imageUrl && this.altText === other.altText
+    return this.imageTitle === other.imageTitle &&
+      this.imageUrl === other.imageUrl &&
+      this.resolvedImageUrl === other.resolvedImageUrl &&
+      this.altText === other.altText
   }
 
   get estimatedHeight (): number {
@@ -134,7 +163,8 @@ class ImageWidget extends WidgetType {
       event.preventDefault()
       event.stopPropagation()
       const node = syntaxTree(view.state).resolve(parseInt(img.dataset.from ?? '-1', 10), 1)
-      linkImageMenu(view, node, { x: event.clientX, y: event.clientY })
+      const imageSource = img.complete && img.naturalWidth > 0 && img.src !== img404 ? img.src : undefined
+      linkImageMenu(view, node, { x: event.clientX, y: event.clientY }, imageSource)
     })
 
     //////////////////////////////////////////
@@ -159,21 +189,14 @@ class ImageWidget extends WidgetType {
       clickAndSelect(view)(event)
     })
 
-    // Display a replacement image in case the correct one is not found
-    img.onerror = () => {
-      img.src = img404
-      caption.textContent = trans('Image not found: %s', img.dataset.originalUrl)
-      caption.contentEditable = 'false'
-    }
-
     // Update the image title on load to retrieve the real image size.
     img.onload = () => {
       img.title = `${img.dataset.title!.replace(/\\"/g, '"')} (${img.naturalWidth}x${img.naturalHeight}px)`
       size.innerHTML = `${img.naturalWidth}&times;${img.naturalHeight}`
 
       // Determine if the image can be opened externally
-      if (isDataUrl(img.dataset.originalUrl!) && figure.contains(openExternally)) {
-        figure.removeChild(openExternally)
+      if (isDataUrl(img.dataset.originalUrl!) || img.src === img404) {
+        openExternally.remove()
       } else if (!figure.contains(openExternally)) {
         figure.appendChild(openExternally)
       }
@@ -194,7 +217,7 @@ class ImageWidget extends WidgetType {
       // Lastly, cache the image's resolved height. This can quickly become
       // inaccurate, but can be solved by the user with a simple Ctrl+A, which
       // will force-reload everything.
-      IMAGE_HEIGHT_CACHE.set(this.resolvedImageUrl, height)
+      IMAGE_HEIGHT_CACHE.set(img.dataset.previewSource!, height)
     }
 
     //////////////////////////////////////////
@@ -253,13 +276,10 @@ class ImageWidget extends WidgetType {
     openExternally.setAttribute('title', trans('Open image externally'))
     openExternally.onclick = function (event) {
       event.stopPropagation()
-      const url = resolveImageUrl(
-        view.state.field(configField).metadata.path,
-        img.dataset.originalUrl ?? ''
-      )
+      const url = img.src
 
       // Open in Zettlr if wanted. TODO: Maybe move this into the editor config?
-      if (window.config.get('files.images.openWith') === 'zettlr') {
+      if (url.startsWith('safe-file://') && window.config.get('files.images.openWith') === 'zettlr') {
         const unencoded = decodeURIComponent(url).substring(12)
         // On Windows, it likes to add a third slash at the beginning (because
         // unlike UNIX, absolute paths start with a letter, not a slash)
@@ -290,12 +310,12 @@ class ImageWidget extends WidgetType {
     figure.appendChild(caption)
     figure.appendChild(size)
 
-    img.src = resolveImageUrl(view.state.field(configField).metadata.path, this.imageUrl)
+    loadImagePreview(img, caption, this.resolvedImageUrl)
 
     return figure
   }
 
-  updateDOM (dom: HTMLElement, view: EditorView): boolean {
+  updateDOM (dom: HTMLElement): boolean {
     // We assume a given structure, and if there's something wrong, we just
     // capture the error and return false, indicating that the entire dom has to
     // be rebuilt.
@@ -305,19 +325,18 @@ class ImageWidget extends WidgetType {
       img.dataset.from = String(this.node.from)
       img.dataset.to = String(this.node.to)
       img.dataset.originalUrl = this.imageUrl
+      img.alt = this.altText
 
-      if (img.dataset.title !== this.imageTitle) {
+      const caption = dom.querySelector('figcaption')!
+      const sourceChanged = img.dataset.previewSource !== this.resolvedImageUrl
+      if (img.dataset.title !== this.imageTitle || sourceChanged) {
         img.dataset.title = this.imageTitle
-        const caption = dom.querySelector('figcaption')! as HTMLElement
         caption.textContent = this.imageTitle.replace(/\\"/g, '"') // Un-escape title
       }
 
-      const resolvedURL = resolveImageUrl(view.state.field(configField).metadata.path, this.imageUrl)
-
-      if (resolvedURL !== img.src) {
-        // The load and onerror handlers will handle this accordingly (and also
-        // update the size and title)
-        img.src = resolvedURL
+      if (sourceChanged) {
+        caption.contentEditable = String(!this.isReferenceStyleImage)
+        loadImagePreview(img, caption, this.resolvedImageUrl)
       }
 
       return true

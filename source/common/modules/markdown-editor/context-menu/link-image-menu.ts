@@ -75,13 +75,14 @@ function getURLForNode (node: SyntaxNode, state: EditorState): string|undefined 
 /**
  * Shows a context menu appropriate for a link or image using the given node
  *
- * @param   {EditorView}                view    The view
- * @param   {SyntaxNode}                node    The node
- * @param   {{ x: number, y: number }}  coords  The coordinates
+ * @param   {EditorView}                view         The view
+ * @param   {SyntaxNode}                node         The node
+ * @param   {{ x: number, y: number }}  coords       The coordinates
+ * @param   {string}                   imageSource  The loaded image preview URL
  */
-export function linkImageMenu (view: EditorView, node: SyntaxNode, coords: { x: number, y: number }): void {
+export function linkImageMenu (view: EditorView, node: SyntaxNode, coords: { x: number, y: number }, imageSource?: string): void {
   const basePath = pathDirname(view.state.field(configField).metadata.path)
-  const url = getURLForNode(node, view.state)
+  const url = getURLForNode(node, view.state) ?? imageSource
 
   const defaultTpl: AnyMenuItem[] = getFormatMenuItems(view)
 
@@ -104,7 +105,7 @@ export function linkImageMenu (view: EditorView, node: SyntaxNode, coords: { x: 
     {
       label: trans('Open link'),
       type: 'normal',
-      action () { openMarkdownLink(url, view) }
+      action () { openMarkdownLink(imageSource ?? url, view) }
     },
     {
       // It's either "Copy Link" or "Copy Mail"
@@ -134,7 +135,7 @@ export function linkImageMenu (view: EditorView, node: SyntaxNode, coords: { x: 
     ...defaultTpl
   ]
 
-  const validAbsoluteURI = makeValidUri(url, basePath)
+  const validAbsoluteURI = imageSource ?? makeValidUri(url, basePath)
   const isFileLink = validAbsoluteURI.startsWith('safe-file://') || validAbsoluteURI.startsWith('file://')
   const isLink = node.type.name !== 'Image'
 
